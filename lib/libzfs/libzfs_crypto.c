@@ -495,7 +495,7 @@ get_key_material_file(libzfs_handle_t *hdl, const char *uri,
 }
 
 static int
-execute_key_fob(libzfs_handle_t *hdl, const char *path, const char * op,
+execute_key_fob(libzfs_handle_t *hdl, const char *path, const char *op,
     const char *fsname, int *outfd)
 {
 	int ret = 0, spawnret = 0, status = 0, compipe[2];
