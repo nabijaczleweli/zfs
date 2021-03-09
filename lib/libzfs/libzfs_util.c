@@ -1024,7 +1024,7 @@ libzfs_init(void)
 		return (NULL);
 	}
 
-	if ((hdl->libzfs_fd = open(ZFS_DEV, O_RDWR|O_EXCL)) < 0) {
+	if ((hdl->libzfs_fd = open(ZFS_DEV, O_RDWR|O_EXCL|O_CLOEXEC)) < 0) {
 		free(hdl);
 		return (NULL);
 	}
@@ -1038,6 +1038,7 @@ libzfs_init(void)
 		free(hdl);
 		return (NULL);
 	}
+	fcntl(fileno(hdl->libzfs_mnttab), F_SETFD, FD_CLOEXEC);
 
 	if (libzfs_core_init() != 0) {
 		(void) close(hdl->libzfs_fd);
