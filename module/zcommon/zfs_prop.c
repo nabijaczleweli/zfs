@@ -936,6 +936,8 @@ zfs_prop_valid_keylocation(const char *str, boolean_t encrypted)
 		return (B_TRUE);
 	else if (strlen(str) > 8 && strncmp("file:///", str, 8) == 0)
 		return (B_TRUE);
+	else if (strlen(str) > 8 && strncmp("exec:///", str, 8) == 0)
+		return (B_TRUE);
 
 	return (B_FALSE);
 }
