@@ -495,24 +495,19 @@ get_key_material_file(libzfs_handle_t *hdl, const char *uri,
 }
 
 static int
-get_key_material_exec(libzfs_handle_t *hdl, const char *uri,
-    const char *fsname, zfs_keyformat_t keyformat, boolean_t newkey,
-    uint8_t **restrict buf, size_t *restrict len_out)
+execute_key_fob(libzfs_handle_t *hdl, const char *path, const char * op,
+    const char *fsname, int *outfd)
 {
 	int ret = 0, spawnret = 0, status = 0, compipe[2];
-	FILE *f = NULL;
-	char *argv[] = {(char *) uri + 7, "new", (char *) fsname, NULL};
-	pid_t child;
+	char *argv[] = {(char *)path, (char *)op, (char *)fsname, NULL};
+	pid_t child = 0;
 	posix_spawn_file_actions_t fact;
-
-	if (strlen(uri) < 7)
-		return (EINVAL);
 
 	if (pipe2(compipe, O_CLOEXEC | O_NONBLOCK) != 0) {
 		ret = errno;
 		errno = 0;
 		zfs_error_aux(hdl, dgettext(TEXT_DOMAIN,
-			"Failed to create keyfob pipes"));
+		    "Failed to create keyfob pipes"));
 		return (ret);
 	}
 
@@ -526,47 +521,69 @@ get_key_material_exec(libzfs_handle_t *hdl, const char *uri,
 	if (spawnret != 0) {
 		ret = spawnret;
 		zfs_error_aux(hdl, dgettext(TEXT_DOMAIN,
-			"Failed to spawn keyfob %s: %s"), argv[0], strerror(spawnret));
+		    "Failed to spawn keyfob %s: %s"),
+		    argv[0], strerror(spawnret));
 
-		close(compipe[0]);
-		return (ret);
+		goto end;
 	}
 
 	if (waitpid(child, &status, 0) < 0) {
 		ret = errno;
 		errno = 0;
 		zfs_error_aux(hdl, dgettext(TEXT_DOMAIN,
-			"Failed to wait for keyfob (%d)"), child);
+		    "Failed to wait for keyfob (%d)"), child);
 
-		close(compipe[0]);
-		return (ret);
+		goto end;
 	}
 
 	if (WIFSIGNALED(status) || WEXITSTATUS(status) != 0) {
 		ret = ENOKEY;
 		if (WIFSIGNALED(status))
 			zfs_error_aux(hdl, dgettext(TEXT_DOMAIN,
-				"Keyfob %s killed by %d"), argv[0], WTERMSIG(status));
+			    "Keyfob %s killed by %d"),
+			    argv[0], WTERMSIG(status));
 		else if (WEXITSTATUS(status) != 127)
 			zfs_error_aux(hdl, dgettext(TEXT_DOMAIN,
-				"Keyfob %s failed with %d"), argv[0], WEXITSTATUS(status));
+			    "Keyfob %s failed with %d"),
+			    argv[0], WEXITSTATUS(status));
 		else {
 			ret = ENOEXEC;
 			zfs_error_aux(hdl, dgettext(TEXT_DOMAIN,
-				"Couldn't start keyfob %s"), argv[0]);
+			    "Couldn't start keyfob %s"), argv[0]);
 		}
 
-		close(compipe[0]);
-		return (ret);
+		goto end;
 	}
 
-	if ((f = fdopen(compipe[0], "r")) == NULL) {
+end:
+	if (ret == 0)
+		*outfd = compipe[0];
+	else
+		close(compipe[0]);
+	return (ret);
+}
+
+static int
+get_key_material_exec(libzfs_handle_t *hdl, const char *uri,
+    const char *fsname, zfs_keyformat_t keyformat, boolean_t newkey,
+    uint8_t **restrict buf, size_t *restrict len_out)
+{
+	int ret = 0, rdpipe = -1;
+	FILE *f = NULL;
+
+	if (strlen(uri) < 7)
+		return (EINVAL);
+
+	if ((ret = execute_key_fob(hdl, uri + 7, "new", fsname, &rdpipe)) != 0)
+		return (ret);
+
+	if ((f = fdopen(rdpipe, "r")) == NULL) {
 		ret = errno;
 		errno = 0;
 		zfs_error_aux(hdl, dgettext(TEXT_DOMAIN,
-			"Failed to fdopen keyfob pipe"));
+		    "Failed to fdopen keyfob pipe"));
 
-		close(compipe[0]);
+		close(rdpipe);
 		return (ret);
 	}
 
