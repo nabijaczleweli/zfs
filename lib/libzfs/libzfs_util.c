@@ -1032,13 +1032,12 @@ libzfs_init(void)
 #ifdef HAVE_SETMNTENT
 	if ((hdl->libzfs_mnttab = setmntent(MNTTAB, "r")) == NULL) {
 #else
-	if ((hdl->libzfs_mnttab = fopen(MNTTAB, "r")) == NULL) {
+	if ((hdl->libzfs_mnttab = fopen(MNTTAB, "re")) == NULL) {
 #endif
 		(void) close(hdl->libzfs_fd);
 		free(hdl);
 		return (NULL);
 	}
-	fcntl(fileno(hdl->libzfs_mnttab), F_SETFD, FD_CLOEXEC);
 
 	if (libzfs_core_init() != 0) {
 		(void) close(hdl->libzfs_fd);
