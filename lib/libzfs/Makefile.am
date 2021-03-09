@@ -80,7 +80,9 @@ libzfs_la_LIBADD += -lm $(LIBCRYPTO_LIBS) $(ZLIB_LIBS) $(LTLIBINTL)
 libzfs_la_LDFLAGS = -pthread
 
 if !ASAN_ENABLED
+if !BUILD_FREEBSD
 libzfs_la_LDFLAGS += -Wl,-z,defs
+endif
 endif
 
 if BUILD_FREEBSD

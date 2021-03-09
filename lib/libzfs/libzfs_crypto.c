@@ -21,14 +21,18 @@
 #include <sys/zfs_context.h>
 #include <sys/fs/zfs.h>
 #include <sys/dsl_crypt.h>
+#include <sys/wait.h>
 #include <libintl.h>
 #include <termios.h>
 #include <signal.h>
+#include <spawn.h>
 #include <errno.h>
 #include <openssl/evp.h>
 #include <libzfs.h>
 #include "libzfs_impl.h"
 #include "zfeature_common.h"
+
+extern char **environ;
 
 /*
  * User keys are used to decrypt the master encryption keys of a dataset. This
@@ -59,10 +63,21 @@ static int caught_interrupt;
 
 static int get_key_material_file(libzfs_handle_t *, const char *, const char *,
     zfs_keyformat_t, boolean_t, uint8_t **, size_t *);
+static int get_key_material_exec(libzfs_handle_t *, const char *, const char *,
+    zfs_keyformat_t, boolean_t, uint8_t **, size_t *);
 
 static zfs_uri_handler_t uri_handlers[] = {
 	{ "file", get_key_material_file },
+	{ "exec", get_key_material_exec },
 	{ NULL, NULL }
+};
+
+static const char *backend_ops_lcase[] = {
+	[BACK_OP_LOAD] = "load",
+	[BACK_OP_NEW] = "new",
+	[BACK_OP_SHIFT] = "shift",
+	[BACK_OP_UNSHIFT] = "unshift",
+	[BACK_OP_CANCEL] = "cancel",
 };
 
 static int
@@ -483,6 +498,138 @@ get_key_material_file(libzfs_handle_t *hdl, const char *uri,
 	return (ret);
 }
 
+static int
+execute_key_provider_exec(libzfs_handle_t *hdl, const char *path,
+    encryption_backend_op_t op, const char *fsname, int *outfd)
+{
+	int ret = 0, spawnret, status, compipe[2];
+	char * const argv[] =
+	    {(char *)path, (char *)backend_ops_lcase[op], (char *)fsname, NULL};
+	pid_t child;
+	posix_spawn_file_actions_t fact;
+
+	if (pipe2(compipe, O_NONBLOCK | O_CLOEXEC) != 0) {
+		ret = errno;
+		errno = 0;
+		zfs_error_aux(hdl, dgettext(TEXT_DOMAIN,
+		    "Failed to create key-provider pipes: %s"), strerror(ret));
+		return (ret);
+	}
+
+	if ((ret = posix_spawn_file_actions_init(&fact)) != 0) {
+		(void) close(compipe[1]);
+
+		zfs_error_aux(hdl, dgettext(TEXT_DOMAIN,
+		    "Failed to init key-provider file actions: %s"),
+		    strerror(ret));
+		return (ret);
+	}
+	if ((ret = posix_spawn_file_actions_adddup2(&fact, compipe[1], 3))
+	    != 0) {
+		(void) posix_spawn_file_actions_destroy(&fact);
+		(void) close(compipe[1]);
+
+		zfs_error_aux(hdl, dgettext(TEXT_DOMAIN,
+		    "Failed to dup2 key-provider file actions: %s"),
+		    strerror(ret));
+		return (ret);
+	}
+
+	spawnret = posix_spawn(&child, argv[0], &fact, NULL, argv, environ);
+	(void) posix_spawn_file_actions_destroy(&fact);
+	(void) close(compipe[1]);
+
+	if (spawnret != 0) {
+		ret = spawnret;
+		zfs_error_aux(hdl, dgettext(TEXT_DOMAIN,
+		    "Failed to spawn key-provider %s: %s"),
+		    argv[0], strerror(spawnret));
+
+		goto end;
+	}
+
+	if (waitpid(child, &status, 0) < 0) {
+		ret = errno;
+		errno = 0;
+		zfs_error_aux(hdl, dgettext(TEXT_DOMAIN,
+		    "Failed to wait for key-provider %s (%d)"), argv[0], child);
+
+		goto end;
+	}
+
+	if (WIFSIGNALED(status)) {
+		ret = EZFS_INTR;
+		zfs_error_aux(hdl, dgettext(TEXT_DOMAIN,
+		    "Key-provider %s killed by %s"),
+		    argv[0], strsignal(WTERMSIG(status)));
+	} else if (WEXITSTATUS(status) == 127) {
+		ret = ENOEXEC;
+		zfs_error_aux(hdl, dgettext(TEXT_DOMAIN,
+		    "Couldn't start key-provider %s"), argv[0]);
+	} else if (WEXITSTATUS(status) != 0) {
+		ret = ECANCELED;
+		zfs_error_aux(hdl, dgettext(TEXT_DOMAIN,
+		    "Key-provider %s failed with %d"),
+		    argv[0], WEXITSTATUS(status));
+	}
+
+end:
+	if (ret == 0)
+		*outfd = compipe[0];
+	else
+		(void) close(compipe[0]);
+	return (ret);
+}
+
+static int
+get_key_material_exec(libzfs_handle_t *hdl, const char *uri,
+    const char *fsname, zfs_keyformat_t keyformat, boolean_t newkey,
+    uint8_t **restrict buf, size_t *restrict len_out)
+{
+	int ret = 0, rdpipe = -1;
+	FILE *f;
+
+	if (strlen(uri) < 7)
+		return (EINVAL);
+
+	if ((ret = execute_key_provider_exec(hdl, uri + 7,
+	    newkey ? BACK_OP_NEW : BACK_OP_LOAD, fsname, &rdpipe)) != 0)
+		return (ret);
+
+	if ((f = fdopen(rdpipe, "r")) == NULL) {
+		ret = errno;
+		errno = 0;
+		zfs_error_aux(hdl, dgettext(TEXT_DOMAIN,
+		    "Failed to fdopen key-provider pipe"));
+
+		(void) close(rdpipe);
+		return (ret);
+	}
+
+	ret = get_key_material_raw(f, keyformat, buf, len_out);
+	(void) fclose(f);
+	return (ret);
+}
+
+__attribute__((visibility("hidden"))) int
+notify_encryption_backend(zfs_handle_t *zhp, const char *keylocation,
+    encryption_backend_op_t what_of)
+{
+	int ret = 0;
+	int rdpipe = -1;
+
+	if (keylocation == NULL)
+		return (0);
+
+	if (strncmp(keylocation, "exec://", 7) == 0) {
+		if ((ret = execute_key_provider_exec(zhp->zfs_hdl,
+		    keylocation + 7, what_of, zfs_get_name(zhp), &rdpipe)) == 0)
+			(void) close(rdpipe);
+	}
+
+	return (ret);
+}
+
 /*
  * Attempts to fetch key material, no matter where it might live. The key
  * material is allocated and returned in km_out. *can_retry_out will be set
@@ -508,7 +655,6 @@ get_key_material(libzfs_handle_t *hdl, boolean_t do_verify, boolean_t newkey,
 	if (ret != 0)
 		goto error;
 
-	/* open the appropriate file descriptor */
 	switch (keyloc) {
 	case ZFS_KEYLOCATION_PROMPT:
 		if (isatty(fileno(stdin))) {
@@ -1388,7 +1534,7 @@ zfs_crypto_rewrap(zfs_handle_t *zhp, nvlist_t *raw_props, boolean_t inheritkey)
 {
 	int ret;
 	char errbuf[1024];
-	boolean_t is_encroot;
+	boolean_t is_encroot, requested_new_key = B_FALSE;
 	nvlist_t *props = NULL;
 	uint8_t *wkeydata = NULL;
 	uint_t wkeylen = 0;
@@ -1440,6 +1586,18 @@ zfs_crypto_rewrap(zfs_handle_t *zhp, nvlist_t *raw_props, boolean_t inheritkey)
 		goto error;
 	}
 
+	/* Get current location to send the right transition to backend */
+	ret = zfs_prop_get(zhp, ZFS_PROP_KEYLOCATION,
+	    prop_keylocation, sizeof (prop_keylocation),
+	    NULL, NULL, 0, B_TRUE);
+	if (ret != 0) {
+		zfs_error_aux(zhp->zfs_hdl,
+		    dgettext(TEXT_DOMAIN, "Failed to "
+		    "get existing keylocation "
+		    "property."));
+		goto error;
+	}
+
 	/*
 	 * If the user wants to use the inheritkey variant of this function
 	 * we don't need to collect any crypto arguments.
@@ -1474,26 +1632,14 @@ zfs_crypto_rewrap(zfs_handle_t *zhp, nvlist_t *raw_props, boolean_t inheritkey)
 				if (ret != 0) {
 					zfs_error_aux(zhp->zfs_hdl,
 					    dgettext(TEXT_DOMAIN, "Failed to "
-					    "get existing keyformat "
+					    "insert existing keyformat "
 					    "property."));
 					goto error;
 				}
 			}
 
-			if (keylocation == NULL) {
-				ret = zfs_prop_get(zhp, ZFS_PROP_KEYLOCATION,
-				    prop_keylocation, sizeof (prop_keylocation),
-				    NULL, NULL, 0, B_TRUE);
-				if (ret != 0) {
-					zfs_error_aux(zhp->zfs_hdl,
-					    dgettext(TEXT_DOMAIN, "Failed to "
-					    "get existing keylocation "
-					    "property."));
-					goto error;
-				}
-
+			if (keylocation == NULL)
 				keylocation = prop_keylocation;
-			}
 		} else {
 			/* need a new key for non-encryption roots */
 			if (keyformat == ZFS_KEYFORMAT_NONE) {
@@ -1519,6 +1665,7 @@ zfs_crypto_rewrap(zfs_handle_t *zhp, nvlist_t *raw_props, boolean_t inheritkey)
 		ret = populate_create_encryption_params_nvlists(zhp->zfs_hdl,
 		    zhp, B_TRUE, keyformat, keylocation, props, &wkeydata,
 		    &wkeylen);
+		requested_new_key = B_TRUE;
 		if (ret != 0)
 			goto error;
 	} else {
@@ -1597,6 +1744,18 @@ zfs_crypto_rewrap(zfs_handle_t *zhp, nvlist_t *raw_props, boolean_t inheritkey)
 		zfs_error(zhp->zfs_hdl, EZFS_CRYPTOFAILED, errbuf);
 	}
 
+	/*
+	 * we can't roll the key back; depending on the scenario,
+	 * this will either resolve itself autimatically,
+	 * or user will have to try old/new key and remove the wrong one;
+	 * freeing the old key would be nice, but best-effort as well
+	 */
+	notify_encryption_backend(zhp,
+	    keylocation, ret == 0 ? BACK_OP_SHIFT : BACK_OP_CANCEL);
+	if (ret == 0 && strcmp(prop_keylocation, keylocation ?: "none"))
+		notify_encryption_backend(zhp,
+		    prop_keylocation, BACK_OP_SHIFT);
+
 	if (pzhp != NULL)
 		zfs_close(pzhp);
 	if (props != NULL)
@@ -1607,6 +1766,10 @@ zfs_crypto_rewrap(zfs_handle_t *zhp, nvlist_t *raw_props, boolean_t inheritkey)
 	return (ret);
 
 error:
+	if (requested_new_key)
+		notify_encryption_backend(zhp,
+		    keylocation, BACK_OP_CANCEL);
+
 	if (pzhp != NULL)
 		zfs_close(pzhp);
 	if (props != NULL)

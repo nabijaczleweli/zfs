@@ -1085,7 +1085,7 @@ encryption suite cannot be changed after dataset creation, the keyformat can be
 with
 .Nm zfs Cm change-key .
 .It Xo
-.Sy keylocation Ns = Ns Sy prompt Ns | Ns Sy file:// Ns Em </absolute/file/path>
+.Sy keylocation Ns = Ns Sy prompt Ns | Ns Sy file:// Ns Em </absolute/file/path> Ns | Ns Sy exec:// Ns Em </absolute/executable/path>
 .Xc
 Controls where the user's encryption key will be loaded from by default for
 commands such as
@@ -1109,7 +1109,10 @@ to access the encrypted data (see
 for details). This setting will also allow the key to be passed in via STDIN,
 but users should be careful not to place keys which should be kept secret on
 the command line. If a file URI is selected, the key will be loaded from the
-specified absolute file path.
+specified absolute file path. If an exec URI is selected, the key will be
+acquired from the executable specified (see EXEC:// in
+.Xr zfs-load-key 8 )
+for details.
 .It Sy pbkdf2iters Ns = Ns Ar iterations
 Controls the number of PBKDF2 iterations that a
 .Sy passphrase
