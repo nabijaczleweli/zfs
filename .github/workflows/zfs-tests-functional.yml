@@ -50,7 +50,7 @@ jobs:
         /usr/share/zfs/zfs-tests.sh -v -s 3G
         ERR=$?
         grep -R . /var/tmp/test_results
-        exit $?
+        exit $ERR
     - name: Prepare artifacts
       if: failure()
       run: |

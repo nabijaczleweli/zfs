@@ -45,7 +45,11 @@ jobs:
       run: |
         sudo mkdir -p $TEST_DIR
         # run for 20 minutes to have a total runner time of 30 minutes
+        set +e
         sudo /usr/share/zfs/zloop.sh -t 1200 -l -m1
+        ERR=$?
+        grep -R . /var/tmp/zloop
+        exit $ERR
     - name: Prepare artifacts
       if: failure()
       run: |
