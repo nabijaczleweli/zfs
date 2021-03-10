@@ -1652,9 +1652,9 @@ zfs_crypto_rewrap(zfs_handle_t *zhp, nvlist_t *raw_props, boolean_t inheritkey)
 		ret = populate_create_encryption_params_nvlists(zhp->zfs_hdl,
 		    zhp, B_TRUE, keyformat, keylocation, props, &wkeydata,
 		    &wkeylen);
+		requested_new_key = B_TRUE;
 		if (ret != 0)
 			goto error;
-		requested_new_key = B_TRUE;
 	} else {
 		/* check that zhp is an encryption root */
 		if (!is_encroot) {
