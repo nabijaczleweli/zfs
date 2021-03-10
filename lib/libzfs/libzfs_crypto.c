@@ -577,7 +577,8 @@ get_key_material_exec(libzfs_handle_t *hdl, const char *uri,
 	if (strlen(uri) < 7)
 		return (EINVAL);
 
-	if ((ret = execute_key_fob(hdl, uri + 7, newkey ? BACK_OP_NEW : BACK_OP_LOAD, fsname, &rdpipe)) != 0)
+	if ((ret = execute_key_fob(hdl, uri + 7,
+	    newkey ? BACK_OP_NEW : BACK_OP_LOAD, fsname, &rdpipe)) != 0)
 		return (ret);
 
 	if ((f = fdopen(rdpipe, "r")) == NULL) {
@@ -1729,7 +1730,8 @@ zfs_crypto_rewrap(zfs_handle_t *zhp, nvlist_t *raw_props, boolean_t inheritkey)
 	/*
 	 * we can't roll the key back; depending on the scenario,
 	 * this will either resolve itself autimatically,
-	 * or user will have to try old/new key and remove the wrong one */
+	 * or user will have to try old/new key and remove the wrong one
+	 */
 	notify_encryption_backend(zhp,
 	    prop_keylocation, ret == 0 ? BACK_OP_SHIFT : BACK_OP_CANCEL);
 
