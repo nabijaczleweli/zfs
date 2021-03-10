@@ -1512,7 +1512,7 @@ zfs_crypto_rewrap(zfs_handle_t *zhp, nvlist_t *raw_props, boolean_t inheritkey)
 {
 	int ret;
 	char errbuf[1024];
-	boolean_t is_encroot;
+	boolean_t is_encroot, requested_new_key = B_FALSE;
 	nvlist_t *props = NULL;
 	uint8_t *wkeydata = NULL;
 	uint_t wkeylen = 0;
@@ -1645,6 +1645,7 @@ zfs_crypto_rewrap(zfs_handle_t *zhp, nvlist_t *raw_props, boolean_t inheritkey)
 		    &wkeylen);
 		if (ret != 0)
 			goto error;
+		requested_new_key = B_TRUE;
 	} else {
 		/* check that zhp is an encryption root */
 		if (!is_encroot) {
@@ -1701,15 +1702,6 @@ zfs_crypto_rewrap(zfs_handle_t *zhp, nvlist_t *raw_props, boolean_t inheritkey)
 		goto error;
 	}
 
-	/* if it's the last time this back-end will be used for this dataset,
-	 * let it know */
-	if (inheritkey || strcmp(prop_keylocation, keylocation) != 0) {
-		ret = notify_encryption_backend(zhp->zfs_hdl, zhp,
-		    prop_keylocation, "free");
-		if (ret != 0)
-			goto error;
-	}
-
 	/* call the ioctl */
 	ret = lzc_change_key(zhp->zfs_name, cmd, props, wkeydata, wkeylen);
 	if (ret != 0) {
@@ -1730,12 +1722,11 @@ zfs_crypto_rewrap(zfs_handle_t *zhp, nvlist_t *raw_props, boolean_t inheritkey)
 		zfs_error(zhp->zfs_hdl, EZFS_CRYPTOFAILED, errbuf);
 	}
 
-	/* we're sure we can communicate with the back-end,
-	 * and rolling the key change back doesn't make sense;
-	 * if the back-end fails to clean up after itself here,
-	 * it will either notify the user, or do so on next load */
+	/* we can't roll the key back; depending on the scenario,
+	 * this will either resolve itself autimatically,
+	 * or user will have to try old/new key and remove the wrong one */
 	notify_encryption_backend(zhp->zfs_hdl, zhp,
-	    prop_keylocation, ret == 0 ? "commit" : "rollback");
+	    prop_keylocation, ret == 0 ? "shift" : "cancel");
 
 	if (pzhp != NULL)
 		zfs_close(pzhp);
@@ -1747,6 +1738,10 @@ zfs_crypto_rewrap(zfs_handle_t *zhp, nvlist_t *raw_props, boolean_t inheritkey)
 	return (ret);
 
 error:
+	if (requested_new_key)
+		notify_encryption_backend(zhp->zfs_hdl, zhp,
+		    keylocation, "cancel");
+
 	if (pzhp != NULL)
 		zfs_close(pzhp);
 	if (props != NULL)
