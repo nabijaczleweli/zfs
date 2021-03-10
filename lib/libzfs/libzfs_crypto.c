@@ -497,11 +497,12 @@ get_key_material_file(libzfs_handle_t *hdl, const char *uri,
 }
 
 static int
-execute_key_fob(libzfs_handle_t *hdl, const char *path, encryption_backend_op_t op,
-    const char *fsname, int *outfd)
+execute_key_fob(libzfs_handle_t *hdl, const char *path,
+    encryption_backend_op_t op, const char *fsname, int *outfd)
 {
 	int ret = 0, spawnret = 0, status = 0, compipe[2];
-	char * const argv[] = {(char *)path, (char *)back_ops_lcase[op], (char *)fsname, NULL};
+	char * const argv[] =
+	    {(char *)path, (char *)back_ops_lcase[op], (char *)fsname, NULL};
 	pid_t child = 0;
 	posix_spawn_file_actions_t fact;
 
@@ -1725,7 +1726,8 @@ zfs_crypto_rewrap(zfs_handle_t *zhp, nvlist_t *raw_props, boolean_t inheritkey)
 		zfs_error(zhp->zfs_hdl, EZFS_CRYPTOFAILED, errbuf);
 	}
 
-	/* we can't roll the key back; depending on the scenario,
+	/*
+	 * we can't roll the key back; depending on the scenario,
 	 * this will either resolve itself autimatically,
 	 * or user will have to try old/new key and remove the wrong one */
 	notify_encryption_backend(zhp,

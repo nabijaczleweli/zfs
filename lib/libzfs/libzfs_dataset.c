@@ -3844,9 +3844,10 @@ zfs_destroy(zfs_handle_t *zhp, boolean_t defer)
 			error = notify_encryption_backend(zhp, keylocation,
 			    BACK_OP_UNSHIFT);
 			if (error)
-				return (zfs_standard_error_fmt(zhp->zfs_hdl, error,
-				    dgettext(TEXT_DOMAIN, "couldn't notify encryption "
-				    "backend about destruction of '%s'"),
+				return (zfs_standard_error_fmt(zhp->zfs_hdl,
+				    error, dgettext(TEXT_DOMAIN,
+				    "couldn't notify encryption back-end "
+				    "about destruction of '%s'"),
 				    zhp->zfs_name));
 		}
 
