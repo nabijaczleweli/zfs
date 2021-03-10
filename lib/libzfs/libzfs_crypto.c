@@ -1739,10 +1739,9 @@ zfs_crypto_rewrap(zfs_handle_t *zhp, nvlist_t *raw_props, boolean_t inheritkey)
 	 */
 	notify_encryption_backend(zhp,
 	    keylocation, ret == 0 ? BACK_OP_SHIFT : BACK_OP_CANCEL);
-	if (ret == 0 && strcmp(prop_keylocation, keylocation)) {
+	if (ret == 0 && strcmp(prop_keylocation, keylocation ?: "none"))
 		notify_encryption_backend(zhp,
 		    prop_keylocation, BACK_OP_SHIFT);
-	}
 
 	if (pzhp != NULL)
 		zfs_close(pzhp);
