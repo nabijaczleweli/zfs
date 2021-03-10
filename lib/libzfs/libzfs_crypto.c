@@ -1735,7 +1735,7 @@ zfs_crypto_rewrap(zfs_handle_t *zhp, nvlist_t *raw_props, boolean_t inheritkey)
 	 * freeing the old key would be nice, but best-effort as well
 	 */
 	notify_encryption_backend(zhp,
-	    prop_keylocation, ret == 0 ? BACK_OP_SHIFT : BACK_OP_CANCEL);
+	    keylocation, ret == 0 ? BACK_OP_SHIFT : BACK_OP_CANCEL);
 	if (ret == 0 && strcmp(prop_keylocation, keylocation)) {
 		notify_encryption_backend(zhp,
 		    prop_keylocation, BACK_OP_SHIFT);
