@@ -540,17 +540,18 @@ execute_key_fob(libzfs_handle_t *hdl, const char *path,
 	}
 
 	if (WIFSIGNALED(status) || WEXITSTATUS(status) != 0) {
-		ret = ENOKEY;
-		if (WIFSIGNALED(status))
+		if (WIFSIGNALED(status)) {
+			ret = EZFS_INTR;
 			zfs_error_aux(hdl, dgettext(TEXT_DOMAIN,
 			    "Keyfob %s killed by %d"),
 			    argv[0], WTERMSIG(status));
-		else if (WEXITSTATUS(status) != 127)
+		} else if (WEXITSTATUS(status) != 127) {
+			ret = ECANCELED;
 			zfs_error_aux(hdl, dgettext(TEXT_DOMAIN,
 			    "Keyfob %s failed with %d"),
 			    argv[0], WEXITSTATUS(status));
-		else {
-			ret = ENOEXEC;
+		} else {
+			ret = ENOPKG;
 			zfs_error_aux(hdl, dgettext(TEXT_DOMAIN,
 			    "Couldn't start keyfob %s"), argv[0]);
 		}
@@ -1730,10 +1731,15 @@ zfs_crypto_rewrap(zfs_handle_t *zhp, nvlist_t *raw_props, boolean_t inheritkey)
 	/*
 	 * we can't roll the key back; depending on the scenario,
 	 * this will either resolve itself autimatically,
-	 * or user will have to try old/new key and remove the wrong one
+	 * or user will have to try old/new key and remove the wrong one;
+	 * freeing the old key would be nice, but best-effort as well
 	 */
 	notify_encryption_backend(zhp,
 	    prop_keylocation, ret == 0 ? BACK_OP_SHIFT : BACK_OP_CANCEL);
+	if (ret == 0 && strcmp(prop_keylocation, keylocation)) {
+		notify_encryption_backend(zhp,
+		    prop_keylocation, BACK_OP_SHIFT);
+	}
 
 	if (pzhp != NULL)
 		zfs_close(pzhp);
