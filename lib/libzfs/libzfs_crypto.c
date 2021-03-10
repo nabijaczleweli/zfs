@@ -574,7 +574,7 @@ get_key_material_exec(libzfs_handle_t *hdl, const char *uri,
 	if (strlen(uri) < 7)
 		return (EINVAL);
 
-	if ((ret = execute_key_fob(hdl, uri + 7, "new", fsname, &rdpipe)) != 0)
+	if ((ret = execute_key_fob(hdl, uri + 7, newkey ? "new" : "load", fsname, &rdpipe)) != 0)
 		return (ret);
 
 	if ((f = fdopen(rdpipe, "r")) == NULL) {
@@ -1492,6 +1492,21 @@ error:
 	return (ret);
 }
 
+static int
+notify_encryption_backend(libzfs_handle_t *hdl, zfs_handle_t *zhp,
+    const char *keylocation, const char * what_of)
+{
+	int ret = 0;
+	int rdpipe = -1;
+
+	if (strncmp(keylocation, "exec://", 7) == 0) {
+		if ((ret = execute_key_fob(hdl, keylocation + 7, what_of, zfs_get_name(zhp), &rdpipe)) == 0)
+			close(rdpipe);
+	}
+
+	return (ret);
+}
+
 int
 zfs_crypto_rewrap(zfs_handle_t *zhp, nvlist_t *raw_props, boolean_t inheritkey)
 {
@@ -1549,6 +1564,18 @@ zfs_crypto_rewrap(zfs_handle_t *zhp, nvlist_t *raw_props, boolean_t inheritkey)
 		goto error;
 	}
 
+	/* Get current location to send the right transition to backend */
+	ret = zfs_prop_get(zhp, ZFS_PROP_KEYLOCATION,
+	    prop_keylocation, sizeof (prop_keylocation),
+	    NULL, NULL, 0, B_TRUE);
+	if (ret != 0) {
+		zfs_error_aux(zhp->zfs_hdl,
+		    dgettext(TEXT_DOMAIN, "Failed to "
+		    "get existing keylocation "
+		    "property."));
+		goto error;
+	}
+
 	/*
 	 * If the user wants to use the inheritkey variant of this function
 	 * we don't need to collect any crypto arguments.
@@ -1583,26 +1610,14 @@ zfs_crypto_rewrap(zfs_handle_t *zhp, nvlist_t *raw_props, boolean_t inheritkey)
 				if (ret != 0) {
 					zfs_error_aux(zhp->zfs_hdl,
 					    dgettext(TEXT_DOMAIN, "Failed to "
-					    "get existing keyformat "
+					    "insert existing keyformat "
 					    "property."));
 					goto error;
 				}
 			}
 
-			if (keylocation == NULL) {
-				ret = zfs_prop_get(zhp, ZFS_PROP_KEYLOCATION,
-				    prop_keylocation, sizeof (prop_keylocation),
-				    NULL, NULL, 0, B_TRUE);
-				if (ret != 0) {
-					zfs_error_aux(zhp->zfs_hdl,
-					    dgettext(TEXT_DOMAIN, "Failed to "
-					    "get existing keylocation "
-					    "property."));
-					goto error;
-				}
-
+			if (keylocation == NULL)
 				keylocation = prop_keylocation;
-			}
 		} else {
 			/* need a new key for non-encryption roots */
 			if (keyformat == ZFS_KEYFORMAT_NONE) {
@@ -1686,6 +1701,15 @@ zfs_crypto_rewrap(zfs_handle_t *zhp, nvlist_t *raw_props, boolean_t inheritkey)
 		goto error;
 	}
 
+	/* if it's the last time this back-end will be used for this dataset,
+	 * let it know */
+	if (inheritkey || strcmp(prop_keylocation, keylocation) != 0) {
+		ret = notify_encryption_backend(zhp->zfs_hdl, zhp,
+		    prop_keylocation, "free");
+		if (ret != 0)
+			goto error;
+	}
+
 	/* call the ioctl */
 	ret = lzc_change_key(zhp->zfs_name, cmd, props, wkeydata, wkeylen);
 	if (ret != 0) {
@@ -1705,6 +1729,13 @@ zfs_crypto_rewrap(zfs_handle_t *zhp, nvlist_t *raw_props, boolean_t inheritkey)
 		}
 		zfs_error(zhp->zfs_hdl, EZFS_CRYPTOFAILED, errbuf);
 	}
+
+	/* we're sure we can communicate with the back-end,
+	 * and rolling the key change back doesn't make sense;
+	 * if the back-end fails to clean up after itself here,
+	 * it will either notify the user, or do so on next load */
+	notify_encryption_backend(zhp->zfs_hdl, zhp,
+	    prop_keylocation, ret == 0 ? "commit" : "rollback");
 
 	if (pzhp != NULL)
 		zfs_close(pzhp);
