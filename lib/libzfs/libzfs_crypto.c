@@ -604,6 +604,9 @@ notify_encryption_backend(zfs_handle_t *zhp, const char *keylocation,
 	int ret = 0;
 	int rdpipe = -1;
 
+	if (keylocation == NULL)
+		return (0);
+
 	if (strncmp(keylocation, "exec://", 7) == 0) {
 		if ((ret = execute_key_fob(zhp->zfs_hdl, keylocation + 7,
 		    what_of, zfs_get_name(zhp), &rdpipe)) == 0)
