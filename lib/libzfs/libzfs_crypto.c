@@ -596,6 +596,22 @@ get_key_material_exec(libzfs_handle_t *hdl, const char *uri,
 	return (ret);
 }
 
+int
+notify_encryption_backend(zfs_handle_t *zhp, const char *keylocation,
+    encryption_backend_op_t what_of)
+{
+	int ret = 0;
+	int rdpipe = -1;
+
+	if (strncmp(keylocation, "exec://", 7) == 0) {
+		if ((ret = execute_key_fob(zhp->zfs_hdl, keylocation + 7,
+		    what_of, zfs_get_name(zhp), &rdpipe)) == 0)
+			close(rdpipe);
+	}
+
+	return (ret);
+}
+
 /*
  * Attempts to fetch key material, no matter where it might live. The key
  * material is allocated and returned in km_out. *can_retry_out will be set
@@ -1493,22 +1509,6 @@ zfs_crypto_verify_rewrap_nvlist(zfs_handle_t *zhp, nvlist_t *props,
 error:
 	nvlist_free(new_props);
 	*props_out = NULL;
-	return (ret);
-}
-
-int
-notify_encryption_backend(zfs_handle_t *zhp, const char *keylocation,
-    encryption_backend_op_t what_of)
-{
-	int ret = 0;
-	int rdpipe = -1;
-
-	if (strncmp(keylocation, "exec://", 7) == 0) {
-		if ((ret = execute_key_fob(zhp->zfs_hdl, keylocation + 7,
-		    what_of, zfs_get_name(zhp), &rdpipe)) == 0)
-			close(rdpipe);
-	}
-
 	return (ret);
 }
 
