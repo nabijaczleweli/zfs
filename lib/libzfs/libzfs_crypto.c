@@ -70,6 +70,14 @@ static zfs_uri_handler_t uri_handlers[] = {
 	{ NULL, NULL }
 };
 
+static const char *back_ops_lcase[] = {
+	[BACK_OP_LOAD] = "load",
+	[BACK_OP_NEW] = "new",
+	[BACK_OP_SHIFT] = "shift",
+	[BACK_OP_UNSHIFT] = "unshift",
+	[BACK_OP_CANCEL] = "cancel",
+};
+
 static int
 pkcs11_get_urandom(uint8_t *buf, size_t bytes)
 {
@@ -489,11 +497,11 @@ get_key_material_file(libzfs_handle_t *hdl, const char *uri,
 }
 
 static int
-execute_key_fob(libzfs_handle_t *hdl, const char *path, const char *op,
+execute_key_fob(libzfs_handle_t *hdl, const char *path, encryption_backend_op_t op,
     const char *fsname, int *outfd)
 {
 	int ret = 0, spawnret = 0, status = 0, compipe[2];
-	char *argv[] = {(char *)path, (char *)op, (char *)fsname, NULL};
+	char * const argv[] = {(char *)path, (char *)back_ops_lcase[op], (char *)fsname, NULL};
 	pid_t child = 0;
 	posix_spawn_file_actions_t fact;
 
@@ -568,7 +576,7 @@ get_key_material_exec(libzfs_handle_t *hdl, const char *uri,
 	if (strlen(uri) < 7)
 		return (EINVAL);
 
-	if ((ret = execute_key_fob(hdl, uri + 7, newkey ? "new" : "load", fsname, &rdpipe)) != 0)
+	if ((ret = execute_key_fob(hdl, uri + 7, newkey ? BACK_OP_NEW : BACK_OP_LOAD, fsname, &rdpipe)) != 0)
 		return (ret);
 
 	if ((f = fdopen(rdpipe, "r")) == NULL) {
@@ -1486,15 +1494,15 @@ error:
 	return (ret);
 }
 
-static int
-notify_encryption_backend(libzfs_handle_t *hdl, zfs_handle_t *zhp,
-    const char *keylocation, const char * what_of)
+int
+notify_encryption_backend(zfs_handle_t *zhp, const char *keylocation,
+    encryption_backend_op_t what_of)
 {
 	int ret = 0;
 	int rdpipe = -1;
 
 	if (strncmp(keylocation, "exec://", 7) == 0) {
-		if ((ret = execute_key_fob(hdl, keylocation + 7, what_of, zfs_get_name(zhp), &rdpipe)) == 0)
+		if ((ret = execute_key_fob(zhp->zfs_hdl, keylocation + 7, what_of, zfs_get_name(zhp), &rdpipe)) == 0)
 			close(rdpipe);
 	}
 
@@ -1719,8 +1727,8 @@ zfs_crypto_rewrap(zfs_handle_t *zhp, nvlist_t *raw_props, boolean_t inheritkey)
 	/* we can't roll the key back; depending on the scenario,
 	 * this will either resolve itself autimatically,
 	 * or user will have to try old/new key and remove the wrong one */
-	notify_encryption_backend(zhp->zfs_hdl, zhp,
-	    prop_keylocation, ret == 0 ? "shift" : "cancel");
+	notify_encryption_backend(zhp,
+	    prop_keylocation, ret == 0 ? BACK_OP_SHIFT : BACK_OP_CANCEL);
 
 	if (pzhp != NULL)
 		zfs_close(pzhp);
@@ -1733,8 +1741,8 @@ zfs_crypto_rewrap(zfs_handle_t *zhp, nvlist_t *raw_props, boolean_t inheritkey)
 
 error:
 	if (requested_new_key)
-		notify_encryption_backend(zhp->zfs_hdl, zhp,
-		    keylocation, "cancel");
+		notify_encryption_backend(zhp,
+		    keylocation, BACK_OP_CANCEL);
 
 	if (pzhp != NULL)
 		zfs_close(pzhp);
