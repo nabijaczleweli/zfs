@@ -3836,8 +3836,8 @@ zfs_destroy(zfs_handle_t *zhp, boolean_t defer)
 		error = lzc_destroy_snaps(nv, defer, NULL);
 		fnvlist_free(nv);
 	} else {
-		if((error = zfs_destroy_notification_applicable(
-		    zhp, keylocation, sizeof (keylocation), &notify)) != 0)
+		if ((error = zfs_destroy_notification_applicable(zhp,
+		    keylocation, sizeof (keylocation), &notify)) != 0)
 			return (error);
 
 		if (notify) {
