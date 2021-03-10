@@ -1030,7 +1030,7 @@ libzfs_init(void)
 	}
 
 #ifdef HAVE_SETMNTENT
-	if ((hdl->libzfs_mnttab = setmntent(MNTTAB, "r")) == NULL) {
+	if ((hdl->libzfs_mnttab = setmntent(MNTTAB, "re")) == NULL) {
 #else
 	if ((hdl->libzfs_mnttab = fopen(MNTTAB, "re")) == NULL) {
 #endif
