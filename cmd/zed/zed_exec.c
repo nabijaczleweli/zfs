@@ -18,16 +18,51 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stddef.h>
+#include <sys/avl.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
+#include <pthread.h>
 #include "zed_exec.h"
 #include "zed_file.h"
 #include "zed_log.h"
 #include "zed_strings.h"
 
 #define	ZEVENT_FILENO	3
+
+struct launched_process_node {
+	avl_node_t node;
+	pid_t pid;
+	uint64_t eid;
+	char * name;
+};
+
+static int
+_launched_process_node_compare(const void *x1, const void *x2)
+{
+	pid_t p1;
+	pid_t p2;
+
+	assert(x1 != NULL);
+	assert(x2 != NULL);
+
+	p1 = ((const struct launched_process_node *) x1)->pid;
+	p2 = ((const struct launched_process_node *) x2)->pid;
+
+	if (p1 < p2)
+		return (-1);
+	else if (p1 == p2)
+		return (0);
+	else
+		return (1);
+}
+
+static pthread_t _reap_children_tid = (pthread_t)-1;
+static volatile boolean_t _reap_children_stop;
+static avl_tree_t _launched_processes;
+static pthread_mutex_t _launched_processes_lock = PTHREAD_MUTEX_INITIALIZER;
 
 /*
  * Create an environment string array for passing to execve() using the
@@ -85,8 +120,8 @@ _zed_exec_fork_child(uint64_t eid, const char *dir, const char *prog,
 	int n;
 	pid_t pid;
 	int fd;
-	pid_t wpid;
-	int status;
+	struct launched_process_node *node;
+	sigset_t mask;
 
 	assert(dir != NULL);
 	assert(prog != NULL);
@@ -107,6 +142,9 @@ _zed_exec_fork_child(uint64_t eid, const char *dir, const char *prog,
 		    prog, eid, strerror(errno));
 		return;
 	} else if (pid == 0) {
+		(void) sigemptyset(&mask);
+		(void) sigprocmask(SIG_SETMASK, &mask, NULL);
+
 		(void) umask(022);
 		(void) alarm(10);
 		if ((fd = open("/dev/null", O_RDWR)) != -1) {
@@ -125,30 +163,109 @@ _zed_exec_fork_child(uint64_t eid, const char *dir, const char *prog,
 	zed_log_msg(LOG_INFO, "Invoking \"%s\" eid=%llu pid=%d",
 	    prog, eid, pid);
 
-	while ((wpid = waitpid(pid, &status, 0)) == (pid_t)-1 && errno == EINTR)
-		;
-	if (wpid == (pid_t)-1) {
-		zed_log_msg(LOG_WARNING,
-		    "Failed to wait for \"%s\" eid=%llu pid=%d",
-		    prog, eid, pid);
-	} else if (WIFEXITED(status)) {
-		zed_log_msg(LOG_INFO,
-		    "Finished \"%s\" eid=%llu pid=%d exit=%d",
-		    prog, eid, pid, WEXITSTATUS(status));
-	} else if (WIFSIGNALED(status) && WTERMSIG(status) == SIGALRM) {
-		zed_log_msg(LOG_INFO,
-		    "Hung \"%s\" eid=%llu pid=%d timed out",
-		    prog, eid, pid);
-	} else if (WIFSIGNALED(status)) {
-		zed_log_msg(LOG_INFO,
-		    "Finished \"%s\" eid=%llu pid=%d sig=%d/%s",
-		    prog, eid, pid, WTERMSIG(status),
-		    strsignal(WTERMSIG(status)));
-	} else {
-		zed_log_msg(LOG_INFO,
-		    "Finished \"%s\" eid=%llu pid=%d status=0x%X",
-		    prog, eid, (unsigned int) status);
+	node = calloc(1, sizeof (*node));
+	if (node) {
+		node->pid = pid;
+		node->eid = eid;
+		node->name = strdup(prog);
+		(void) pthread_mutex_lock(&_launched_processes_lock);
+		avl_add(&_launched_processes, node);
+		(void) pthread_mutex_unlock(&_launched_processes_lock);
 	}
+}
+
+static void
+_nop(int sig)
+{}
+
+static void *
+_reap_children(void *arg)
+{
+	struct launched_process_node node, *pnode;
+	pid_t pid;
+	int status;
+	struct sigaction sa = {};
+
+	(void) sigfillset(&sa.sa_mask);
+	(void) sigdelset(&sa.sa_mask, SIGCHLD);
+	(void) pthread_sigmask(SIG_SETMASK, &sa.sa_mask, NULL);
+
+	(void) sigemptyset(&sa.sa_mask);
+	sa.sa_handler = _nop;
+	sa.sa_flags = SA_NOCLDSTOP;
+	(void) sigaction(SIGCHLD, &sa, NULL);
+
+	for (_reap_children_stop = B_FALSE; !_reap_children_stop;) {
+		pid = waitpid(0, &status, 0);
+
+		if (pid == (pid_t)-1) {
+			if (errno == ECHILD)
+				pause();
+			else if (errno != EINTR)
+				zed_log_msg(LOG_WARNING,
+				    "Failed to wait for children: %s",
+				    strerror(errno));
+		} else {
+			memset(&node, 0, sizeof (node));
+			node.pid = pid;
+			(void) pthread_mutex_lock(&_launched_processes_lock);
+			if ((pnode = avl_find(&_launched_processes, &node, NULL))) {
+				memcpy(&node, pnode, sizeof (node));
+
+				avl_remove(&_launched_processes, pnode);
+				free(pnode);
+			}
+			(void) pthread_mutex_unlock(&_launched_processes_lock);
+
+			if (WIFEXITED(status)) {
+				zed_log_msg(LOG_INFO,
+				    "Finished \"%s\" eid=%llu pid=%d exit=%d",
+				    node.name, node.eid, pid, WEXITSTATUS(status));
+			} else if (WIFSIGNALED(status) && WTERMSIG(status) == SIGALRM) {
+				zed_log_msg(LOG_INFO,
+				    "Hung \"%s\" eid=%llu pid=%d timed out",
+				    node.name, node.eid, pid);
+			} else if (WIFSIGNALED(status)) {
+				zed_log_msg(LOG_INFO,
+				    "Finished \"%s\" eid=%llu pid=%d sig=%d/%s",
+				    node.name, node.eid, pid, WTERMSIG(status),
+				    strsignal(WTERMSIG(status)));
+			} else {
+				zed_log_msg(LOG_INFO,
+				    "Finished \"%s\" eid=%llu pid=%d status=0x%X",
+				    node.name, node.eid, (unsigned int) status);
+			}
+
+			free(node.name);
+		}
+	}
+
+	return NULL;
+}
+
+void
+zed_exec_fini(void)
+{
+	struct launched_process_node *node;
+	void *cookie = NULL;
+
+	if (_reap_children_tid == (pthread_t)-1)
+		return;
+
+	_reap_children_stop = B_TRUE;
+	(void) pthread_kill(_reap_children_tid, SIGCHLD);
+	(void) pthread_join(_reap_children_tid, NULL);
+
+	while ((node = avl_destroy_nodes(&_launched_processes, &cookie)) != NULL) {
+		free(node->name);
+		free(node);
+	}
+	avl_destroy(&_launched_processes);
+
+	(void) pthread_mutex_destroy(&_launched_processes_lock);
+	(void) pthread_mutex_init(&_launched_processes_lock, NULL);
+
+	_reap_children_tid = (pthread_t)-1;
 }
 
 /*
@@ -179,6 +296,15 @@ zed_exec_process(uint64_t eid, const char *class, const char *subclass,
 
 	if (!dir || !zedlets || !envs || zfd < 0)
 		return (-1);
+
+	if (_reap_children_tid == (pthread_t)-1) {
+		if (pthread_create(&_reap_children_tid, NULL, _reap_children, NULL) != 0)
+			return (-1);
+		pthread_setname_np(_reap_children_tid, "reap ZEDLETs");
+
+		avl_create(&_launched_processes, _launched_process_node_compare,
+		    sizeof (struct launched_process_node), offsetof(struct launched_process_node, node));
+	}
 
 	csp = class_strings;
 
