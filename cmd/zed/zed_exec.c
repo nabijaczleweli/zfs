@@ -108,6 +108,7 @@ _zed_exec_fork_child(uint64_t eid, const char *dir, const char *prog,
 		return;
 	} else if (pid == 0) {
 		(void) umask(022);
+		(void) alarm(10);
 		if ((fd = open("/dev/null", O_RDWR)) != -1) {
 			(void) dup2(fd, STDIN_FILENO);
 			(void) dup2(fd, STDOUT_FILENO);
@@ -124,56 +125,29 @@ _zed_exec_fork_child(uint64_t eid, const char *dir, const char *prog,
 	zed_log_msg(LOG_INFO, "Invoking \"%s\" eid=%llu pid=%d",
 	    prog, eid, pid);
 
-	/* FIXME: Timeout rogue child processes with sigalarm? */
-
-	/*
-	 * Wait for child process using WNOHANG to limit
-	 * the time spent waiting to 10 seconds (10,000ms).
-	 */
-	for (n = 0; n < 1000; n++) {
-		wpid = waitpid(pid, &status, WNOHANG);
-		if (wpid == (pid_t)-1) {
-			if (errno == EINTR)
-				continue;
-			zed_log_msg(LOG_WARNING,
-			    "Failed to wait for \"%s\" eid=%llu pid=%d",
-			    prog, eid, pid);
-			break;
-		} else if (wpid == 0) {
-			struct timespec t;
-
-			/* child still running */
-			t.tv_sec = 0;
-			t.tv_nsec = 10000000;	/* 10ms */
-			(void) nanosleep(&t, NULL);
-			continue;
-		}
-
-		if (WIFEXITED(status)) {
-			zed_log_msg(LOG_INFO,
-			    "Finished \"%s\" eid=%llu pid=%d exit=%d",
-			    prog, eid, pid, WEXITSTATUS(status));
-		} else if (WIFSIGNALED(status)) {
-			zed_log_msg(LOG_INFO,
-			    "Finished \"%s\" eid=%llu pid=%d sig=%d/%s",
-			    prog, eid, pid, WTERMSIG(status),
-			    strsignal(WTERMSIG(status)));
-		} else {
-			zed_log_msg(LOG_INFO,
-			    "Finished \"%s\" eid=%llu pid=%d status=0x%X",
-			    prog, eid, (unsigned int) status);
-		}
-		break;
-	}
-
-	/*
-	 * kill child process after 10 seconds
-	 */
-	if (wpid == 0) {
-		zed_log_msg(LOG_WARNING, "Killing hung \"%s\" pid=%d",
-		    prog, pid);
-		(void) kill(pid, SIGKILL);
-		(void) waitpid(pid, &status, 0);
+	while ((wpid = waitpid(pid, &status, 0)) == (pid_t)-1 && errno == EINTR)
+		;
+	if (wpid == (pid_t)-1) {
+		zed_log_msg(LOG_WARNING,
+		    "Failed to wait for \"%s\" eid=%llu pid=%d",
+		    prog, eid, pid);
+	} else if (WIFEXITED(status)) {
+		zed_log_msg(LOG_INFO,
+		    "Finished \"%s\" eid=%llu pid=%d exit=%d",
+		    prog, eid, pid, WEXITSTATUS(status));
+	} else if (WIFSIGNALED(status) && WTERMSIG(status) == SIGALRM) {
+		zed_log_msg(LOG_INFO,
+		    "Hung \"%s\" eid=%llu pid=%d timed out",
+		    prog, eid, pid);
+	} else if (WIFSIGNALED(status)) {
+		zed_log_msg(LOG_INFO,
+		    "Finished \"%s\" eid=%llu pid=%d sig=%d/%s",
+		    prog, eid, pid, WTERMSIG(status),
+		    strsignal(WTERMSIG(status)));
+	} else {
+		zed_log_msg(LOG_INFO,
+		    "Finished \"%s\" eid=%llu pid=%d status=0x%X",
+		    prog, eid, (unsigned int) status);
 	}
 }
 
