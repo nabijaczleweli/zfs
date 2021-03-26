@@ -146,7 +146,6 @@ _zed_exec_fork_child(uint64_t eid, const char *dir, const char *prog,
 		(void) sigprocmask(SIG_SETMASK, &mask, NULL);
 
 		(void) umask(022);
-		(void) alarm(10);
 		if ((fd = open("/dev/null", O_RDWR)) != -1) {
 			(void) dup2(fd, STDIN_FILENO);
 			(void) dup2(fd, STDOUT_FILENO);
@@ -221,10 +220,6 @@ _reap_children(void *arg)
 				zed_log_msg(LOG_INFO,
 				    "Finished \"%s\" eid=%llu pid=%d exit=%d",
 				    node.name, node.eid, pid, WEXITSTATUS(status));
-			} else if (WIFSIGNALED(status) && WTERMSIG(status) == SIGALRM) {
-				zed_log_msg(LOG_INFO,
-				    "Hung \"%s\" eid=%llu pid=%d timed out",
-				    node.name, node.eid, pid);
 			} else if (WIFSIGNALED(status)) {
 				zed_log_msg(LOG_INFO,
 				    "Finished \"%s\" eid=%llu pid=%d sig=%d/%s",

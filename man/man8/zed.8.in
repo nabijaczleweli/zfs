@@ -195,12 +195,6 @@ ZEDLETs may need to call other ZFS commands.  The installation paths of
 the following executables are defined: \fBZDB\fR, \fBZED\fR, \fBZFS\fR,
 \fBZINJECT\fR, and \fBZPOOL\fR.  These variables can be overridden in the
 rc file if needed.
-.PP
-ZEDLETs start with a ten-second
-.BR alarm (2)
-to prevent misbehaving ZEDLETs delaying processing of subsequent events.
-Any ZEDLET whose life is forseen to usefully extend past ten seconds
-should therefore cancel the alarm to ensure its atomicity.
 
 .SH FILES
 .\" .TP
