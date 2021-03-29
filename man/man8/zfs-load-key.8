@@ -395,6 +395,16 @@ on datasets already handled by this provider (and the operator will first
 need to change to a different provider, like
 .Nm prompt ,
 then set it back to achieve a long-term-homomorphic result).
+.Ss Security considerations
+Loading URI-based keys for untrusted pools might lead to secret leakage
+from the host or execution of untrusted code; verbose errors
+in untrusted environments allow the administrator to make a decision.
+.Pp
+An environment is considered untrusted if the
+.Ev ZFS_UNTRUSTED
+environment variable is unset and the
+.Xr zfs 8
+binary set-user-id or set-group-id, or that variable is set and nonempty.
 .Ss EXEC://
 In order:
 .Bl -bullet -offset -indent

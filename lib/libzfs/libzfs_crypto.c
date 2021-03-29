@@ -80,6 +80,17 @@ static const char *backend_ops_lcase[] = {
 	[BACK_OP_CANCEL] = "cancel",
 };
 
+static boolean_t
+is_environment_trusted(void)
+{
+	const char *env_trust = getenv("ZFS_UNTRUSTED");
+
+	if (env_trust == NULL)
+		return (geteuid() == getuid() && getegid() == getgid());
+	else
+		return (env_trust[0] == '\0');
+}
+
 static int
 pkcs11_get_urandom(uint8_t *buf, size_t bytes)
 {
@@ -617,16 +628,47 @@ notify_encryption_backend(zfs_handle_t *zhp, const char *keylocation,
 {
 	int ret = 0;
 	int rdpipe = -1;
+	zfs_keylocation_t keyloc;
+	char *uri_scheme = NULL;
 
 	if (keylocation == NULL)
-		return (0);
+		goto end;
 
-	if (strncmp(keylocation, "exec://", 7) == 0) {
+	ret = zfs_prop_parse_keylocation(zhp->zfs_hdl, keylocation, &keyloc,
+	    &uri_scheme);
+	if (ret != 0)
+		goto end;
+
+	if (keyloc != ZFS_KEYLOCATION_URI)
+		goto end;
+
+	if (strcmp(uri_scheme, "file") == 0) {
+		/*
+		 * Nothing to do, allow for compatibility
+		 * (and re-trying to SHIFT a file makes no sense)
+		 * even if LOAD (which it isn't), we don't return the value
+		 */
+		goto end;
+	}
+
+	if (!is_environment_trusted()) {
+		zfs_error_aux(zhp->zfs_hdl, dgettext(TEXT_DOMAIN,
+		    "keylocation=%s and in untrusted environment; "
+		    "if that URI appears correct, clear "
+		    "$LIBZFS_UNTRUSTED and try %sing again"),
+		    keylocation, backend_ops_lcase[what_of]);
+		ret = EZFS_PERM;
+		goto end;
+	}
+
+	if (strcmp(uri_scheme, "exec") == 0) {
 		if ((ret = execute_key_provider_exec(zhp->zfs_hdl,
 		    keylocation + 7, what_of, zfs_get_name(zhp), &rdpipe)) == 0)
 			(void) close(rdpipe);
 	}
 
+end:
+	free(uri_scheme);
 	return (ret);
 }
 
@@ -672,6 +714,16 @@ get_key_material(libzfs_handle_t *hdl, boolean_t do_verify, boolean_t newkey,
 
 		break;
 	case ZFS_KEYLOCATION_URI:
+		if (!is_environment_trusted()) {
+			ret = EZFS_PERM;
+			zfs_error_aux(hdl, dgettext(TEXT_DOMAIN,
+			    "keylocation=%s and in untrusted environment; "
+			    "if that URI appears correct, clear "
+			    "$LIBZFS_UNTRUSTED and try %sing again"),
+			    keylocation, backend_ops_lcase[BACK_OP_LOAD]);
+			goto error;
+		}
+
 		ret = ENOTSUP;
 
 		for (handler = uri_handlers; handler->zuh_scheme != NULL;
