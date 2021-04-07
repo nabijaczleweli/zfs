@@ -17,21 +17,21 @@ filter_out_zvols_with_links() {
 }
 
 filter_out_deleted_zvols() {
+	zz=
 	while read -r zvol; do
-		if zfs list "$zvol" >/dev/null 2>&1; then
-			echo "$zvol"
-		fi
+		zz="$zz	$zvol"
 	done
+
+	OIFS="$IFS"
+	IFS="	"
+	zfs list -H -o name $zz 2>/dev/null
+	IFS="$OIFS"
 }
 
 list_zvols() {
 	zfs list -t volume -H -o \
-		name,volmode,receive_resume_token,redact_snaps |
-		while read -r zvol_line; do
-		name=$(echo "$zvol_line" | awk '{print $1}')
-		volmode=$(echo "$zvol_line" | awk '{print $2}')
-		token=$(echo "$zvol_line" | awk '{print $3}')
-		redacted=$(echo "$zvol_line" | awk '{print $4}')
+	    name,volmode,receive_resume_token,redact_snaps |
+	    while IFS="	" read -r name volmode token redacted; do
 		#
 		# /dev links are not created for zvols with volmode = "none"
 		# or for redacted zvols.
