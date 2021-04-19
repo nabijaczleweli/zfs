@@ -190,6 +190,17 @@ See also
 .BR systemd.mount (5)
 
 .PP
+.SH ENVIRONMENT
+The
+.BR $ZFS_DEBUG
+environment variable, which can either be 0 (default),
+1 (print summary accounting information at the end),
+or at least 2 (print accounting information for each subprocess as it finishes).
+
+If not present, /proc/cmdline is additionally checked for
+.EM debug ,
+in which case the debug level is set to 2.
+
 .SH EXAMPLE
 To begin, enable tracking for the pool:
 .PP

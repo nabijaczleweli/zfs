@@ -30,22 +30,15 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <errno.h>
+#include <libzfs.h>
 
 #define STRCMP ((int(*)(const void *, const void *))&strcmp)
 #define ABORT_ENOMEM() \
 	do { \
 		fprintf(stderr, PROGNAME ": %d: not enough memory (L%d)!\n", getpid(), __LINE__); \
-		_exit(2); \
+		_exit(1 << 0); \
 	} while(0)
 
-typedef struct zpool_handle zpool_handle_t;
-typedef struct libzfs_handle libzfs_handle_t;
-typedef int (*zpool_iter_f)(zpool_handle_t *, void *);
-libzfs_handle_t *libzfs_init(void);
-void libzfs_fini(libzfs_handle_t *);
-int zpool_iter(libzfs_handle_t *, zpool_iter_f, void *);
-const char *zpool_get_name(zpool_handle_t *);
-void zpool_close(zpool_handle_t *);
 #define B_TRUE ((_Bool)1)
 #define B_FALSE ((_Bool)0)
 
@@ -123,7 +116,7 @@ static char *systemd_escape(const char *input, const char *prepend, const char *
 			*(out++) = *cur;
 	}
 
-	strcpy(out, append);
+	memcpy(out, append, applen + 1);
 	return ret;
 }
 
@@ -214,7 +207,7 @@ static int line_worker(char *line, const char *cachefile) {
 
 	if (p_systemd_ignore == NULL) {
 		fprintf(stderr, PROGNAME ": %d: not enough tokens!\n", getpid());
-		return 1;
+		return 1 << 1;
 	}
 
 	strncpy(argv0, dataset, strlen(argv0));
@@ -253,7 +246,7 @@ static int line_worker(char *line, const char *cachefile) {
 
 	if (strcmp(p_encroot, "-") != 0) {
 		const char *keymountdep = NULL;
-		char *keyloadunit = systemd_escape(p_encroot, "zfs-load-key-", ".service");
+		char *keyloadunit = systemd_escape(p_encroot, "zfs-load-key@", ".service");
 		_Bool is_prompt = B_TRUE;
 
 		if (strcmp(dataset, p_encroot) == 0) {
@@ -279,7 +272,7 @@ static int line_worker(char *line, const char *cachefile) {
 			FILE *keyloadunit_f = fopenat(destdir_fd, keyloadunit, O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC, "w", 0644);
 			if (!keyloadunit_f) {
 				fprintf(stderr, PROGNAME ": %d: %s: couldn't open %s under %s: %s\n", getpid(), dataset, keyloadunit, destdir, strerror(errno));
-				return 4;
+				return 1 << 2;
 			}
 
 			fprintf(keyloadunit_f,
@@ -314,8 +307,7 @@ static int line_worker(char *line, const char *cachefile) {
 				"# dataset is a parent of the root filesystem.\n"
 				"StandardOutput=null\n"
 				"StandardError=null\n"
-				"ExecStart=/bin/sh -c '"
-				"  set -eu;"
+				"ExecStart=/bin/sh -euc '"
 				"  keystatus=\"$$(" ZFS " get -H -o value keystatus \"%s\")\";"
 				"  [ \"$$keystatus\" = \"unavailable\" ] || exit 0;",
 				dataset);
@@ -332,16 +324,15 @@ static int line_worker(char *line, const char *cachefile) {
 					dataset, dataset, dataset);
 			else
 				fprintf(keyloadunit_f,
-					"" ZFS " load-key \"%s\"",
+					"exec " ZFS " load-key \"%s\"",
 					dataset);
 
 			fprintf(keyloadunit_f,
 				"'\n"
-				"ExecStop=/bin/sh -c '"
-					"set -eu;"
+				"ExecStop=/bin/sh -euc '"
 					"keystatus=\"$$(" ZFS " get -H -o value keystatus \"%s\")\";"
 					"[ \"$$keystatus\" = \"available\" ] || exit 0;"
-					"" ZFS " unload-key \"%s\""
+					"exec " ZFS " unload-key \"%s\""
 				"'\n",
 				dataset, dataset);
 
@@ -368,7 +359,7 @@ static int line_worker(char *line, const char *cachefile) {
 		return 0;
 	else {
 		fprintf(stderr, PROGNAME ": %d: %s: invalid org.openzfs.systemd:ignore=%s\n", getpid(), dataset, p_systemd_ignore);
-		return 5;
+		return 1 << 3;
 	}
 
 	// Check for canmount=off.
@@ -380,7 +371,7 @@ static int line_worker(char *line, const char *cachefile) {
 		return 0;
 	else {
 		fprintf(stderr, PROGNAME ": %d: %s: invalid canmount=%s\n", getpid(), dataset, p_canmount);
-		return 6;
+		return 1 << 4;
 	}
 
 	// Check for legacy and blank mountpoints.
@@ -388,7 +379,7 @@ static int line_worker(char *line, const char *cachefile) {
 		return 0;
 	else if (p_mountpoint[0] != '/') {
 		fprintf(stderr, PROGNAME ": %d: %s: invalid mountpoint=%s\n", getpid(), dataset, p_mountpoint);
-		return 7;
+		return 1 << 5;
 	}
 
 	// Escape the mountpoint per systemd policy.
@@ -396,7 +387,7 @@ static int line_worker(char *line, const char *cachefile) {
 	const char *mountfile = systemd_escape_path(p_mountpoint, "", ".mount");
 	if (mountfile == NULL) {
 		fprintf(stderr, PROGNAME ": %d: %s: abnormal simplified mountpoint: %s\n", getpid(), dataset, p_mountpoint);
-		return 8;
+		return 1 << 6;
 	}
 
 
@@ -564,7 +555,7 @@ static int line_worker(char *line, const char *cachefile) {
 		sem_post(&noauto_files->noauto_names_sem);
 	if (!keyloadunit_f) {
 		fprintf(stderr, PROGNAME ": %d: %s: couldn't open %s under %s: %s\n", getpid(), dataset, mountfile, destdir, strerror(errno));
-		return 4;
+		return 1 << 7;
 	}
 
 	fprintf(keyloadunit_f,
@@ -701,7 +692,7 @@ int main(int argc, char **argv) {
 		destdir_fd = open(destdir, O_PATH | O_DIRECTORY | O_CLOEXEC);
 		if (destdir_fd < 0) {
 			fprintf(stderr, PROGNAME ": can't open destination directory %s: %s\n", destdir, strerror(errno));
-			return 5;
+			return 2;
 		}
 	}
 
@@ -782,7 +773,7 @@ int main(int argc, char **argv) {
 	pid_t *canmount_on_pids = reallocarray(NULL, canmount_on_pids_len, sizeof (*canmount_on_pids));
 	if (canmount_on_pids == NULL) {
 		fprintf(stderr, PROGNAME ": no memory for pid list!\n");
-		return 6;
+		return 5;
 	}
 
 	if (debug)
@@ -849,10 +840,12 @@ int main(int argc, char **argv) {
 			sem_post(&noauto_files->noauto_not_on_sem);
 	}
 
-	int status;
+	int status, ret = 0;
 	struct rusage usage;
 	size_t forked_canmount_on_max = forked_canmount_on;
 	while ((pid = wait4(-1, &status, 0, &usage)) != -1) {
+		ret |= status;
+
 		if (forked_canmount_on != 0) {
 			for (size_t i = 0; i < forked_canmount_on_max; ++i)
 				if (canmount_on_pids[i] == pid) {
@@ -916,4 +909,6 @@ int main(int argc, char **argv) {
 			(unsigned long long) time_start.tv_sec, (unsigned long long) time_start.tv_nsec,
 			(unsigned long long) time_end.tv_sec, (unsigned long long) time_end.tv_nsec);
 	}
+
+	_exit(ret);
 }
