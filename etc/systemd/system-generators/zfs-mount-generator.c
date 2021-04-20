@@ -17,7 +17,7 @@
 #include <sys/time.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
-#include <sys/shm.h>
+#include <sys/mman.h>
 #include <semaphore.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -374,7 +374,7 @@ line_worker(char *line, const char *cachefile)
 			    dataset, dataset);
 			/* END CSTYLED */
 
-			fclose(keyloadunit_f);
+			(void) fclose(keyloadunit_f);
 		}
 
 		// Update the dependencies for the mount file
@@ -558,13 +558,13 @@ line_worker(char *line, const char *cachefile)
 	// 	a file for this path again,
 	// 	we leave the file name in the tracking array.
 
-	if (strcmp(p_canmount, "on") == 0)
-		sem_wait(&noauto_files->noauto_names_sem);
-	else
-		while (
-		    sem_wait(&noauto_files->noauto_not_on_sem) == -1 &&
-		    errno == EINTR)
+	{
+		sem_t *our_sem = (strcmp(p_canmount, "on") == 0) ?
+		    &noauto_files->noauto_names_sem :
+		    &noauto_files->noauto_not_on_sem;
+		while (sem_wait(our_sem) == -1 && errno == EINTR)
 			;
+	}
 
 	struct stat stbuf;
 	_Bool already_exists = fstatat(destdir_fd, mountfile, &stbuf, 0) == 0;
@@ -578,17 +578,18 @@ line_worker(char *line, const char *cachefile)
 		}
 
 	if (already_exists) {
-		if (strcmp(p_canmount, "on") == 0)
-			sem_post(&noauto_files->noauto_names_sem);
-
 		if (is_known) {
 			// If it's in $noauto_files, we must be noauto too.
+			// See 5.
+			errno = 0;
+			(void) unlinkat(destdir_fd, mountfile, 0);
+
 			// See 2.
 			fprintf(stderr, PROGNAME ": %s (%d): "
-			    "removing duplicate noauto unit %s\n",
-			    dataset, getpid(), mountfile);
-			// See 5.
-			unlinkat(destdir_fd, mountfile, 0);
+			    "removing duplicate noauto unit %s%s%s\n",
+			    dataset, getpid(), mountfile,
+			    errno ? "" : " failed: ",
+			    errno ? "" : strerror(errno));
 		} else {
 			// Don't log for canmount=noauto
 			if (strcmp(p_canmount, "on") == 0)
@@ -597,6 +598,8 @@ line_worker(char *line, const char *cachefile)
 				    dataset, getpid(), mountfile);
 		}
 
+		if (strcmp(p_canmount, "on") == 0)
+			sem_post(&noauto_files->noauto_names_sem);
 		// File exists: skip current dataset.
 		return (0);
 	} else {
@@ -679,7 +682,7 @@ line_worker(char *line, const char *cachefile)
 	    "Options=defaults%s,zfsutil\n",
 	    p_mountpoint, dataset, opts);
 
-	fclose(keyloadunit_f);
+	(void) fclose(keyloadunit_f);
 
 	if (!requiredby && !wantedby)
 		return (0);
@@ -724,7 +727,7 @@ line_worker(char *line, const char *cachefile)
 					    dataset, getpid(), mountfile,
 					    depdir, destdir, strerror(errno));
 
-				close(depdir_fd);
+				(void) close(depdir_fd);
 				free(depdir);
 			}
 		}
@@ -824,27 +827,14 @@ main(int argc, char **argv)
 
 	{
 		// We could just get a gigabyte here and Not Care,
-		// but if overcommit is off then SHM_NORESERVE is ignored
-		// and we'd try to rip a gigabyte out of swap
-		int id =
-		    shmget(IPC_PRIVATE, 4 * 1024 * 1024, SHM_NORESERVE | 0600);
-		if (id == -1) {
+		// but if vm.overcommit_memory=2, then MAP_NORESERVE is ignored
+		// and we'd try (and likely fail) to rip it out of swap
+		noauto_files = mmap(NULL, 4 * 1024 * 1024,
+		    PROT_READ | PROT_WRITE,
+		    MAP_SHARED | MAP_ANONYMOUS | MAP_NORESERVE, -1, 0);
+		if (noauto_files == MAP_FAILED) {
 			fprintf(stderr,
-			    PROGNAME ": couldn't create shm: %s\n",
-			    strerror(errno));
-			return (4);
-		}
-
-		noauto_files = shmat(id, NULL, 0);
-		if (shmctl(id, IPC_RMID, NULL) == -1) {
-			fprintf(stderr, PROGNAME ": "
-			    "couldn't mark shm segment for destruction: %s; "
-			    "%d leaked!\n", strerror(errno), id);
-			return (4);
-		}
-		if (noauto_files == (void *)-1) {
-			fprintf(stderr,
-			    PROGNAME ": couldn't attach shm: %s\n",
+			    PROGNAME ": couldn't allocate IPC region: %s\n",
 			    strerror(errno));
 			return (4);
 		}
@@ -961,7 +951,7 @@ main(int argc, char **argv)
 			}
 		}
 
-		fclose(cachefile);
+		(void) fclose(cachefile);
 	}
 	free(line);
 
