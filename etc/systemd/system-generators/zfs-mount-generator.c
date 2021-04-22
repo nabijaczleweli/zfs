@@ -34,6 +34,15 @@
 #include <libzfs.h>
 
 #define	STRCMP ((int(*)(const void *, const void *))&strcmp)
+#define	PID_T_CMP ((int(*)(const void *, const void *))&pid_t_cmp)
+
+typedef char _pid_t_must_be_signed[-((pid_t)-1 > 0)];
+static int
+pid_t_cmp(const pid_t *lhs, const pid_t *rhs)
+{
+	return (*lhs - *rhs);
+}
+
 #define	ABORT_ENOMEM() \
 	do { \
 		fprintf(stderr, PROGNAME ": %d: " \
@@ -870,7 +879,7 @@ main(int argc, char **argv)
 		}
 
 		if (debug && !isatty(STDOUT_FILENO))
-				dup2(STDERR_FILENO, STDOUT_FILENO);
+			dup2(STDERR_FILENO, STDOUT_FILENO);
 	}
 
 	size_t forked_canmount_on = 0;
@@ -965,6 +974,10 @@ main(int argc, char **argv)
 		// No canmount=on processes to finish, so don't deadlock here
 		for (size_t i = 0; i < forked_canmount_not_on; ++i)
 			sem_post(&noauto_files->noauto_not_on_sem);
+	} else {
+		// Likely a no-op, since we got these from a narrow fork loop
+		qsort(canmount_on_pids, forked_canmount_on,
+		    sizeof (*canmount_on_pids), PID_T_CMP);
 	}
 
 	int status, ret = 0;
@@ -974,11 +987,10 @@ main(int argc, char **argv)
 		ret |= WEXITSTATUS(status) | WTERMSIG(status);
 
 		if (forked_canmount_on != 0) {
-			for (size_t i = 0; i < forked_canmount_on_max; ++i)
-				if (canmount_on_pids[i] == pid) {
-					--forked_canmount_on;
-					break;
-				}
+			if (bsearch(&pid, canmount_on_pids,
+			    forked_canmount_on_max, sizeof (*canmount_on_pids),
+			    PID_T_CMP))
+				--forked_canmount_on;
 
 			if (forked_canmount_on == 0) {
 				// All canmount=on processes have finished,
