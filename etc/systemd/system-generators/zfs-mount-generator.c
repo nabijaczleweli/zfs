@@ -277,21 +277,23 @@ line_worker(char *line, const char *cachefile)
 		if (strcmp(dataset, p_encroot) == 0) {
 			const char *keymountdep = NULL;
 			bool is_prompt = false;
+			bool need_network = false;
 
 			regmatch_t uri_matches[3];
 			if (regexec(&uri_regex, p_keyloc,
 			    nitems(uri_matches), uri_matches, 0) == 0) {
+				p_keyloc[uri_matches[1].rm_eo] = '\0';
 				p_keyloc[uri_matches[2].rm_eo] = '\0';
+				const char *scheme =
+				    &p_keyloc[uri_matches[1].rm_so];
 				const char *path =
 				    &p_keyloc[uri_matches[2].rm_so];
 
-				/*
-				 * Assumes all URI keylocations need
-				 * the mount for their path;
-				 * http://, for example, wouldn't
-				 * (but it'd need network-online.target et al.)
-				 */
-				keymountdep = path;
+				if (strcmp(scheme, "https") == 0 ||
+				    strcmp(scheme, "http") == 0)
+					need_network = true;
+				else
+					keymountdep = path;
 			} else {
 				if (strcmp(p_keyloc, "prompt") != 0)
 					fprintf(stderr, PROGNAME "[%d]: %s: "
@@ -324,6 +326,11 @@ line_worker(char *line, const char *cachefile)
 			    "Wants=%s\n"
 			    "After=%s\n",
 			    dataset, cachefile, wants, after);
+
+			if (need_network)
+				fprintf(keyloadunit_f,
+				    "Wants=network-online.target\n"
+				    "After=network-online.target\n");
 
 			if (p_systemd_requires)
 				fprintf(keyloadunit_f,
