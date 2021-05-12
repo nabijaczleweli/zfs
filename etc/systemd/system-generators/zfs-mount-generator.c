@@ -592,6 +592,7 @@ line_worker(char *line, const char *cachefile)
 	bool already_exists = fstatat(destdir_fd, mountfile, &stbuf, 0) == 0;
 	bool is_known = tfind(mountfile, &noauto_files, STRCMP) != NULL;
 
+	*(tofree++) = (void *)mountfile;
 	if (already_exists) {
 		if (is_known) {
 			/* If it's in noauto_files, we must be noauto too */
@@ -615,23 +616,21 @@ line_worker(char *line, const char *cachefile)
 		}
 
 		/* File exists: skip current dataset */
-		*(tofree++) = (void *)mountfile;
 		goto end;
 	} else {
 		if (is_known) {
 			/* See 4 */
-			*(tofree++) = (void *)mountfile;
 			goto end;
 		} else if (strcmp(p_canmount, "noauto") == 0) {
-			if (tsearch(mountfile, &noauto_files, STRCMP) == NULL) {
+			if (tsearch(mountfile, &noauto_files, STRCMP) == NULL)
 				fprintf(stderr, PROGNAME "[%d]: %s: "
 				    "out of memory for noauto datasets! "
 				    "Not tracking %s.\n",
 				    getpid(), dataset, mountfile);
-				*(tofree++) = (void *)mountfile;
-			}
-		} else
-			*(tofree++) = (void *)mountfile;
+			else
+				/* mountfile escaped to noauto_files */
+				*(--tofree) = NULL;
+		}
 	}
 
 
