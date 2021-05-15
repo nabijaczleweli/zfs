@@ -319,7 +319,7 @@ zfs_adjust_mount_options(zfs_handle_t *zhp, const char *mntpoint,
  * in the case of a mount failure we do not have the exact errno.  We must
  * make due with return value from the mount process.
  */
-int
+__attribute__((visibility("hidden"))) int
 do_mount(zfs_handle_t *zhp, const char *mntpt, char *opts, int flags)
 {
 	const char *src = zfs_get_name(zhp);
@@ -373,7 +373,7 @@ do_mount(zfs_handle_t *zhp, const char *mntpt, char *opts, int flags)
 	return (error);
 }
 
-int
+__attribute__((visibility("hidden"))) int
 do_unmount(const char *mntpt, int flags)
 {
 	if (!libzfs_envvar_is_set("ZFS_MOUNT_HELPER")) {

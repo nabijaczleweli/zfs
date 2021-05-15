@@ -92,7 +92,7 @@ struct prop_changelist {
  * with different options without interrupting service. We do handle 'sharesmb'
  * since there may be old resource names that need to be removed.
  */
-int
+__attribute__((visibility("hidden"))) int
 changelist_prefix(prop_changelist_t *clp)
 {
 	prop_changenode_t *cn;
@@ -166,7 +166,7 @@ changelist_prefix(prop_changelist_t *clp)
  * previously mounted/shared.  Otherwise, we always remount/reshare the
  * filesystem.
  */
-int
+__attribute__((visibility("hidden"))) int
 changelist_postfix(prop_changelist_t *clp)
 {
 	prop_changenode_t *cn;
@@ -284,7 +284,7 @@ changelist_postfix(prop_changelist_t *clp)
 /*
  * Is this "dataset" a child of "parent"?
  */
-boolean_t
+static boolean_t
 isa_child_of(const char *dataset, const char *parent)
 {
 	int len;
@@ -307,7 +307,7 @@ isa_child_of(const char *dataset, const char *parent)
  * could do this automatically if libzfs kept track of all open handles, but
  * this is a lot less work.
  */
-void
+__attribute__((visibility("hidden"))) void
 changelist_rename(prop_changelist_t *clp, const char *src, const char *dst)
 {
 	prop_changenode_t *cn;
@@ -344,7 +344,7 @@ changelist_rename(prop_changelist_t *clp, const char *src, const char *dst)
  * Given a gathered changelist for the 'sharenfs' or 'sharesmb' property,
  * unshare all the datasets in the list.
  */
-int
+__attribute__((visibility("hidden"))) int
 changelist_unshare(prop_changelist_t *clp, zfs_share_proto_t *proto)
 {
 	prop_changenode_t *cn;
@@ -374,7 +374,7 @@ changelist_unshare(prop_changelist_t *clp, zfs_share_proto_t *proto)
  * This information has already been recorded while gathering the changelist
  * via changelist_gather().
  */
-int
+__attribute__((visibility("hidden"))) int
 changelist_haszonedchild(prop_changelist_t *clp)
 {
 	return (clp->cl_haszonedchild);
@@ -383,7 +383,7 @@ changelist_haszonedchild(prop_changelist_t *clp)
 /*
  * Remove a node from a gathered list.
  */
-void
+__attribute__((visibility("hidden"))) void
 changelist_remove(prop_changelist_t *clp, const char *name)
 {
 	prop_changenode_t *cn;
@@ -408,7 +408,7 @@ changelist_remove(prop_changelist_t *clp, const char *name)
 /*
  * Release any memory associated with a changelist.
  */
-void
+__attribute__((visibility("hidden"))) void
 changelist_free(prop_changelist_t *clp)
 {
 	prop_changenode_t *cn;
@@ -620,7 +620,7 @@ compare_dataset_names(const void *a, const void *b, void *unused)
  * inherit the property.  For each such dataset, we add it to the list and
  * mark whether it was shared beforehand.
  */
-prop_changelist_t *
+__attribute__((visibility("hidden"))) prop_changelist_t *
 changelist_gather(zfs_handle_t *zhp, zfs_prop_t prop, int gather_flags,
     int mnt_flags)
 {

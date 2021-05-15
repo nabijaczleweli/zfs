@@ -102,6 +102,7 @@ zfs_share_type_t zfs_is_shared_proto(zfs_handle_t *, char **,
  * The share protocols table must be in the same order as the zfs_share_proto_t
  * enum in libzfs_impl.h
  */
+__attribute__((visibility("hidden")))
 proto_table_t proto_table[PROTO_END] = {
 	{ZFS_PROP_SHARENFS, "nfs", EZFS_SHARENFSFAILED, EZFS_UNSHARENFSFAILED},
 	{ZFS_PROP_SHARESMB, "smb", EZFS_SHARESMBFAILED, EZFS_UNSHARESMBFAILED},
@@ -261,7 +262,7 @@ zfs_is_mountable_internal(zfs_handle_t *zhp, const char *mountpoint)
  * Returns true if the given dataset is mountable, false otherwise.  Returns the
  * mountpoint in 'buf'.
  */
-boolean_t
+__attribute__((visibility("hidden"))) boolean_t
 zfs_is_mountable(zfs_handle_t *zhp, char *buf, size_t buflen,
     zprop_source_t *source, int flags)
 {
@@ -716,7 +717,7 @@ zfs_is_shared(zfs_handle_t *zhp)
 /*
  * Unshare a filesystem by mountpoint.
  */
-int
+__attribute__((visibility("hidden"))) int
 unshare_one(libzfs_handle_t *hdl, const char *name, const char *mountpoint,
     zfs_share_proto_t proto)
 {
@@ -735,7 +736,7 @@ unshare_one(libzfs_handle_t *hdl, const char *name, const char *mountpoint,
  * Query libshare for the given mountpoint and protocol, returning
  * a zfs_share_type_t value.
  */
-zfs_share_type_t
+__attribute__((visibility("hidden"))) zfs_share_type_t
 is_shared(const char *mountpoint, zfs_share_proto_t proto)
 {
 	if (sa_is_shared(mountpoint, proto_table[proto].p_name)) {
@@ -756,7 +757,7 @@ is_shared(const char *mountpoint, zfs_share_proto_t proto)
  * protocol specific properties (sharenfs, sharesmb).  We rely
  * on "libshare" to do the dirty work for us.
  */
-int
+__attribute__((visibility("hidden"))) int
 zfs_share_proto(zfs_handle_t *zhp, zfs_share_proto_t *proto)
 {
 	char mountpoint[ZFS_MAXPROPLEN];
@@ -860,13 +861,13 @@ zfs_is_shared_smb(zfs_handle_t *zhp, char **where)
  * Call the legacy parse interface to get the protocol specific
  * options using the NULL arg to indicate that this is a "parse" only.
  */
-int
+__attribute__((visibility("hidden"))) int
 zfs_parse_options(char *options, zfs_share_proto_t proto)
 {
 	return (sa_validate_shareopts(options, proto_table[proto].p_name));
 }
 
-void
+__attribute__((visibility("hidden"))) void
 zfs_commit_proto(zfs_share_proto_t *proto)
 {
 	zfs_share_proto_t *curr_proto;
@@ -925,7 +926,7 @@ zfs_shareall(zfs_handle_t *zhp)
 /*
  * Unshare the given filesystem.
  */
-int
+__attribute__((visibility("hidden"))) int
 zfs_unshare_proto(zfs_handle_t *zhp, const char *mountpoint,
     zfs_share_proto_t *proto)
 {
@@ -1043,7 +1044,7 @@ zfs_unshareall_bytype(zfs_handle_t *zhp, const char *mountpoint,
  *
  * Any other directories we leave alone.
  */
-void
+__attribute__((visibility("hidden"))) void
 remove_mountpoint(zfs_handle_t *zhp)
 {
 	char mountpoint[ZFS_MAXPROPLEN];

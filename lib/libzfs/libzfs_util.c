@@ -304,8 +304,7 @@ libzfs_error_description(libzfs_handle_t *hdl)
 	}
 }
 
-/*PRINTFLIKE2*/
-void
+__attribute__((visibility("hidden"))) void
 zfs_error_aux(libzfs_handle_t *hdl, const char *fmt, ...)
 {
 	va_list ap;
@@ -346,14 +345,13 @@ zfs_verror(libzfs_handle_t *hdl, int error, const char *fmt, va_list ap)
 	}
 }
 
-int
+__attribute__((visibility("hidden"))) int
 zfs_error(libzfs_handle_t *hdl, int error, const char *msg)
 {
 	return (zfs_error_fmt(hdl, error, "%s", msg));
 }
 
-/*PRINTFLIKE3*/
-int
+__attribute__((visibility("hidden"))) int
 zfs_error_fmt(libzfs_handle_t *hdl, int error, const char *fmt, ...)
 {
 	va_list ap;
@@ -403,8 +401,7 @@ zfs_standard_error(libzfs_handle_t *hdl, int error, const char *msg)
 	return (zfs_standard_error_fmt(hdl, error, "%s", msg));
 }
 
-/*PRINTFLIKE3*/
-int
+__attribute__((visibility("hidden"))) int
 zfs_standard_error_fmt(libzfs_handle_t *hdl, int error, const char *fmt, ...)
 {
 	va_list ap;
@@ -495,7 +492,7 @@ zfs_standard_error_fmt(libzfs_handle_t *hdl, int error, const char *fmt, ...)
 	return (-1);
 }
 
-void
+__attribute__((visibility("hidden"))) void
 zfs_setprop_error(libzfs_handle_t *hdl, zfs_prop_t prop, int err,
     char *errbuf)
 {
@@ -607,14 +604,13 @@ zfs_setprop_error(libzfs_handle_t *hdl, zfs_prop_t prop, int err,
 	}
 }
 
-int
+__attribute__((visibility("hidden"))) int
 zpool_standard_error(libzfs_handle_t *hdl, int error, const char *msg)
 {
 	return (zpool_standard_error_fmt(hdl, error, "%s", msg));
 }
 
-/*PRINTFLIKE3*/
-int
+__attribute__((visibility("hidden"))) int
 zpool_standard_error_fmt(libzfs_handle_t *hdl, int error, const char *fmt, ...)
 {
 	va_list ap;
@@ -748,7 +744,7 @@ zpool_standard_error_fmt(libzfs_handle_t *hdl, int error, const char *fmt, ...)
 /*
  * Display an out of memory error message and abort the current program.
  */
-int
+__attribute__((visibility("hidden"))) int
 no_memory(libzfs_handle_t *hdl)
 {
 	return (zfs_error(hdl, EZFS_NOMEM, "internal error"));
@@ -757,7 +753,7 @@ no_memory(libzfs_handle_t *hdl)
 /*
  * A safe form of malloc() which will die if the allocation fails.
  */
-void *
+__attribute__((visibility("hidden"))) void *
 zfs_alloc(libzfs_handle_t *hdl, size_t size)
 {
 	void *data;
@@ -771,8 +767,7 @@ zfs_alloc(libzfs_handle_t *hdl, size_t size)
 /*
  * A safe form of asprintf() which will die if the allocation fails.
  */
-/*PRINTFLIKE2*/
-char *
+__attribute__((visibility("hidden"))) char *
 zfs_asprintf(libzfs_handle_t *hdl, const char *fmt, ...)
 {
 	va_list ap;
@@ -796,7 +791,7 @@ zfs_asprintf(libzfs_handle_t *hdl, const char *fmt, ...)
 /*
  * A safe form of realloc(), which also zeroes newly allocated space.
  */
-void *
+__attribute__((visibility("hidden")))void *
 zfs_realloc(libzfs_handle_t *hdl, void *ptr, size_t oldsize, size_t newsize)
 {
 	void *ret;
@@ -813,7 +808,7 @@ zfs_realloc(libzfs_handle_t *hdl, void *ptr, size_t oldsize, size_t newsize)
 /*
  * A safe form of strdup() which will die if the allocation fails.
  */
-char *
+__attribute__((visibility("hidden"))) char *
 zfs_strdup(libzfs_handle_t *hdl, const char *str)
 {
 	char *ret;
@@ -1147,7 +1142,7 @@ zfs_path_to_zhandle(libzfs_handle_t *hdl, const char *path, zfs_type_t argtype)
  * Initialize the zc_nvlist_dst member to prepare for receiving an nvlist from
  * an ioctl().
  */
-int
+__attribute__((visibility("hidden"))) int
 zcmd_alloc_dst_nvlist(libzfs_handle_t *hdl, zfs_cmd_t *zc, size_t len)
 {
 	if (len == 0)
@@ -1166,7 +1161,7 @@ zcmd_alloc_dst_nvlist(libzfs_handle_t *hdl, zfs_cmd_t *zc, size_t len)
  * expand the nvlist to the size specified in 'zc_nvlist_dst_size', which was
  * filled in by the kernel to indicate the actual required size.
  */
-int
+__attribute__((visibility("hidden"))) int
 zcmd_expand_dst_nvlist(libzfs_handle_t *hdl, zfs_cmd_t *zc)
 {
 	free((void *)(uintptr_t)zc->zc_nvlist_dst);
@@ -1181,7 +1176,7 @@ zcmd_expand_dst_nvlist(libzfs_handle_t *hdl, zfs_cmd_t *zc)
 /*
  * Called to free the src and dst nvlists stored in the command structure.
  */
-void
+__attribute__((visibility("hidden"))) void
 zcmd_free_nvlists(zfs_cmd_t *zc)
 {
 	free((void *)(uintptr_t)zc->zc_nvlist_conf);
@@ -1212,14 +1207,14 @@ zcmd_write_nvlist_com(libzfs_handle_t *hdl, uint64_t *outnv, uint64_t *outlen,
 	return (0);
 }
 
-int
+__attribute__((visibility("hidden"))) int
 zcmd_write_conf_nvlist(libzfs_handle_t *hdl, zfs_cmd_t *zc, nvlist_t *nvl)
 {
 	return (zcmd_write_nvlist_com(hdl, &zc->zc_nvlist_conf,
 	    &zc->zc_nvlist_conf_size, nvl));
 }
 
-int
+__attribute__((visibility("hidden"))) int
 zcmd_write_src_nvlist(libzfs_handle_t *hdl, zfs_cmd_t *zc, nvlist_t *nvl)
 {
 	return (zcmd_write_nvlist_com(hdl, &zc->zc_nvlist_src,
@@ -1229,7 +1224,7 @@ zcmd_write_src_nvlist(libzfs_handle_t *hdl, zfs_cmd_t *zc, nvlist_t *nvl)
 /*
  * Unpacks an nvlist from the ZFS ioctl command structure.
  */
-int
+__attribute__((visibility("hidden"))) int
 zcmd_read_dst_nvlist(libzfs_handle_t *hdl, zfs_cmd_t *zc, nvlist_t **nvlp)
 {
 	if (nvlist_unpack((void *)(uintptr_t)zc->zc_nvlist_dst,
@@ -1586,7 +1581,7 @@ zfs_nicestrtonum(libzfs_handle_t *hdl, const char *value, uint64_t *num)
  * command line utilities).  This also handles converting index types
  * (compression, checksum, etc) from strings to their on-disk index.
  */
-int
+__attribute__((visibility("hidden"))) int
 zprop_parse_value(libzfs_handle_t *hdl, nvpair_t *elem, int prop,
     zfs_type_t type, nvlist_t *ret, char **svalp, uint64_t *ivalp,
     const char *errbuf)
@@ -1913,7 +1908,7 @@ zprop_expand_list_cb(int prop, void *cb)
 	return (ZPROP_CONT);
 }
 
-int
+__attribute__((visibility("hidden"))) int
 zprop_expand_list(libzfs_handle_t *hdl, zprop_list_t **plp, zfs_type_t type)
 {
 	zprop_list_t *entry;

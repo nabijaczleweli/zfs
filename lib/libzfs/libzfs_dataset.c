@@ -101,7 +101,7 @@ zfs_type_to_name(zfs_type_t type)
  * provide a more meaningful error message.  We call zfs_error_aux() to
  * explain exactly why the name was not valid.
  */
-int
+__attribute__((visibility("hidden"))) int
 zfs_validate_name(libzfs_handle_t *hdl, const char *path, int type,
     boolean_t modifying)
 {
@@ -473,7 +473,7 @@ make_dataset_handle_common(zfs_handle_t *zhp, zfs_cmd_t *zc)
 	return (0);
 }
 
-zfs_handle_t *
+__attribute__((visibility("hidden"))) zfs_handle_t *
 make_dataset_handle(libzfs_handle_t *hdl, const char *path)
 {
 	zfs_cmd_t zc = {"\0"};
@@ -502,7 +502,7 @@ make_dataset_handle(libzfs_handle_t *hdl, const char *path)
 	return (zhp);
 }
 
-zfs_handle_t *
+__attribute__((visibility("hidden"))) zfs_handle_t *
 make_dataset_handle_zc(libzfs_handle_t *hdl, zfs_cmd_t *zc)
 {
 	zfs_handle_t *zhp = calloc(1, sizeof (zfs_handle_t));
@@ -519,7 +519,7 @@ make_dataset_handle_zc(libzfs_handle_t *hdl, zfs_cmd_t *zc)
 	return (zhp);
 }
 
-zfs_handle_t *
+__attribute__((visibility("hidden"))) zfs_handle_t *
 make_dataset_simple_handle_zc(zfs_handle_t *pzhp, zfs_cmd_t *zc)
 {
 	zfs_handle_t *zhp = calloc(1, sizeof (zfs_handle_t));
@@ -614,7 +614,7 @@ zfs_bookmark_exists(const char *path)
 	return (rv);
 }
 
-zfs_handle_t *
+__attribute__((visibility("hidden"))) zfs_handle_t *
 make_bookmark_handle(zfs_handle_t *parent, const char *path,
     nvlist_t *bmark_props)
 {
@@ -3504,7 +3504,7 @@ zfs_dataset_exists(libzfs_handle_t *hdl, const char *path, zfs_type_t types)
  * the prefixlen portion of the path, and the target itself.
  * Fail if the initial prefixlen-ancestor does not already exist.
  */
-int
+__attribute__((visibility("hidden"))) int
 create_parents(libzfs_handle_t *hdl, char *target, int prefixlen)
 {
 	zfs_handle_t *h;

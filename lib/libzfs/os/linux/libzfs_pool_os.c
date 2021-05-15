@@ -57,7 +57,7 @@
  * If the device has being dynamically expanded then we need to relabel
  * the disk to use the new unallocated space.
  */
-int
+__attribute__((visibility("hidden"))) int
 zpool_relabel_disk(libzfs_handle_t *hdl, const char *path, const char *msg)
 {
 	int fd, error;

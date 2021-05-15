@@ -75,7 +75,7 @@ config_node_compare(const void *a, const void *b, void *unused)
 		return (0);
 }
 
-void
+__attribute__((visibility("hidden"))) void
 namespace_clear(libzfs_handle_t *hdl)
 {
 	if (hdl->libzfs_ns_avl) {

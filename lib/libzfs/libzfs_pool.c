@@ -964,7 +964,7 @@ zpool_prop_get_feature(zpool_handle_t *zhp, const char *propname, char *buf,
  * Validate the given pool name, optionally putting an extended error message in
  * 'buf'.
  */
-boolean_t
+__attribute__((visibility("hidden"))) boolean_t
 zpool_name_valid(libzfs_handle_t *hdl, boolean_t isopen, const char *pool)
 {
 	namecheck_err_t why;
@@ -1105,7 +1105,7 @@ zpool_open_canfail(libzfs_handle_t *hdl, const char *pool)
  * Like the above, but silent on error.  Used when iterating over pools (because
  * the configuration cache may be out of date).
  */
-int
+__attribute__((visibility("hidden"))) int
 zpool_open_silent(libzfs_handle_t *hdl, const char *pool, zpool_handle_t **ret)
 {
 	zpool_handle_t *zhp;

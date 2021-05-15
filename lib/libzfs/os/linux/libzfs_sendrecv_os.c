@@ -32,7 +32,7 @@
 #define	F_GETPIPE_SZ (F_GETLEASE + 7)
 #endif /* F_GETPIPE_SZ */
 
-void
+__attribute__((visibility("hidden"))) void
 libzfs_set_pipe_max(int infd)
 {
 	FILE *procf = fopen("/proc/sys/fs/pipe-max-size", "re");

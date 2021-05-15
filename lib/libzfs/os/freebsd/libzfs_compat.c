@@ -39,7 +39,7 @@
 #define	ZFS_KMOD	"openzfs"
 #endif
 
-void
+__attribute__((visibility("hidden"))) void
 libzfs_set_pipe_max(int infd)
 {
 	/* FreeBSD automatically resizes */
@@ -209,7 +209,7 @@ zfs_ioctl(libzfs_handle_t *hdl, int request, zfs_cmd_t *zc)
  * to load the ZFS modules.  Under normal circumstances the modules
  * should already have been loaded by some external mechanism.
  */
-int
+__attribute__((visibility("hidden"))) int
 libzfs_load_module(void)
 {
 	/*
@@ -226,7 +226,7 @@ libzfs_load_module(void)
 	return (0);
 }
 
-int
+__attribute__((visibility("hidden"))) int
 zpool_relabel_disk(libzfs_handle_t *hdl, const char *path, const char *msg)
 {
 	return (0);
@@ -238,7 +238,7 @@ zpool_label_disk(libzfs_handle_t *hdl, zpool_handle_t *zhp, const char *name)
 	return (0);
 }
 
-int
+__attribute__((visibility("hidden"))) int
 find_shares_object(differ_info_t *di)
 {
 	return (0);

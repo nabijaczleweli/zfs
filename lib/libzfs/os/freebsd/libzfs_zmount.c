@@ -112,7 +112,7 @@ do_mount_(const char *spec, const char *dir, int mflag, char *fstype,
 	return (rv);
 }
 
-int
+__attribute__((visibility("hidden"))) int
 do_mount(zfs_handle_t *zhp, const char *mntpt, char *opts, int flags)
 {
 
@@ -120,7 +120,7 @@ do_mount(zfs_handle_t *zhp, const char *mntpt, char *opts, int flags)
 	    opts, sizeof (mntpt)));
 }
 
-int
+__attribute__((visibility("hidden"))) int
 do_unmount(const char *mntpt, int flags)
 {
 	if (unmount(mntpt, flags) < 0)

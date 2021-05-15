@@ -159,13 +159,13 @@ libzfs_load_module_impl(const char *module)
 	return (ENOENT);
 }
 
-int
+__attribute__((visibility("hidden"))) int
 libzfs_load_module(void)
 {
 	return (libzfs_load_module_impl(ZFS_DRIVER));
 }
 
-int
+__attribute__((visibility("hidden"))) int
 find_shares_object(differ_info_t *di)
 {
 	char fullpath[MAXPATHLEN];
