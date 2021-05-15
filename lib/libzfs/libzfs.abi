@@ -121,6 +121,7 @@
     <elf-symbol name='zfs_commit_shares' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='zfs_commit_smb_shares' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='zfs_component_namecheck' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+    <elf-symbol name='zfs_could_mount' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='zfs_create' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='zfs_create_ancestors' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='zfs_crypto_attempt_load_keys' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
@@ -176,7 +177,6 @@
     <elf-symbol name='zfs_mod_supported' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='zfs_mount' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='zfs_mount_at' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
-    <elf-symbol name='zfs_mount_delegation_check' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='zfs_name_to_prop' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='zfs_name_valid' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='zfs_nicestrtonum' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
@@ -971,12 +971,12 @@
       <parameter type-id='type-id-1'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <function-decl name='zfs_unshare_smb' filepath='../../include/libzfs.h' line='853' column='1' visibility='default' binding='global' size-in-bits='64'>
+    <function-decl name='zfs_unshare_smb' filepath='../../include/libzfs.h' line='855' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-87'/>
       <parameter type-id='type-id-89'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <function-decl name='zfs_commit_smb_shares' filepath='../../include/libzfs.h' line='862' column='1' visibility='default' binding='global' size-in-bits='64'>
+    <function-decl name='zfs_commit_smb_shares' filepath='../../include/libzfs.h' line='864' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-20'/>
     </function-decl>
     <function-decl name='uu_avl_walk_end' filepath='../../include/libuutil.h' line='340' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -995,7 +995,7 @@
       <parameter type-id='type-id-87'/>
       <return type-id='type-id-20'/>
     </function-decl>
-    <function-decl name='zfs_share_smb' filepath='../../include/libzfs.h' line='850' column='1' visibility='default' binding='global' size-in-bits='64'>
+    <function-decl name='zfs_share_smb' filepath='../../include/libzfs.h' line='852' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-87'/>
       <return type-id='type-id-1'/>
     </function-decl>
@@ -1041,16 +1041,16 @@
       <parameter type-id='type-id-1'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <function-decl name='zfs_share_nfs' filepath='../../include/libzfs.h' line='849' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-87'/>
-      <return type-id='type-id-1'/>
-    </function-decl>
-    <function-decl name='zfs_unshare_nfs' filepath='../../include/libzfs.h' line='852' column='1' visibility='default' binding='global' size-in-bits='64'>
+    <function-decl name='zfs_unshare_nfs' filepath='../../include/libzfs.h' line='854' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-87'/>
       <parameter type-id='type-id-89'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <function-decl name='zfs_commit_nfs_shares' filepath='../../include/libzfs.h' line='861' column='1' visibility='default' binding='global' size-in-bits='64'>
+    <function-decl name='zfs_share_nfs' filepath='../../include/libzfs.h' line='851' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-87'/>
+      <return type-id='type-id-1'/>
+    </function-decl>
+    <function-decl name='zfs_commit_nfs_shares' filepath='../../include/libzfs.h' line='863' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-20'/>
     </function-decl>
     <function-decl name='isa_child_of' mangled-name='isa_child_of' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_changelist.c' line='288' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='isa_child_of'>
@@ -1095,7 +1095,7 @@
       <parameter type-id='type-id-91'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <function-decl name='zfs_commit_proto' filepath='../../include/libzfs_impl.h' line='259' column='1' visibility='default' binding='global' size-in-bits='64'>
+    <function-decl name='zfs_commit_proto' filepath='../../include/libzfs_impl.h' line='258' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-91'/>
       <return type-id='type-id-20'/>
     </function-decl>
@@ -1198,7 +1198,7 @@
       <parameter type-id='type-id-1'/>
       <return type-id='type-id-87'/>
     </function-decl>
-    <function-decl name='zfs_is_shared' filepath='../../include/libzfs.h' line='840' column='1' visibility='default' binding='global' size-in-bits='64'>
+    <function-decl name='zfs_is_shared' filepath='../../include/libzfs.h' line='842' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-87'/>
       <return type-id='type-id-13'/>
     </function-decl>
@@ -1723,23 +1723,23 @@
     </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='libzfs_crypto.c' comp-dir-path='/home/nabijaczleweli/store/code/zfs/lib/libzfs' language='LANG_C99'>
-    <function-decl name='zfs_crypto_get_encryption_root' mangled-name='zfs_crypto_get_encryption_root' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='962' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_crypto_get_encryption_root'>
-      <parameter type-id='type-id-98' name='zhp' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='962' column='1'/>
-      <parameter type-id='type-id-114' name='is_encroot' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='962' column='1'/>
-      <parameter type-id='type-id-29' name='buf' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='963' column='1'/>
+    <function-decl name='zfs_crypto_get_encryption_root' mangled-name='zfs_crypto_get_encryption_root' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='965' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_crypto_get_encryption_root'>
+      <parameter type-id='type-id-98' name='zhp' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='965' column='1'/>
+      <parameter type-id='type-id-114' name='is_encroot' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='965' column='1'/>
+      <parameter type-id='type-id-29' name='buf' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='966' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <pointer-type-def type-id='type-id-30' size-in-bits='64' id='type-id-145'/>
     <typedef-decl name='uint_t' type-id='type-id-19' filepath='../../lib/libspl/include/sys/stdtypes.h' line='33' column='1' id='type-id-146'/>
     <pointer-type-def type-id='type-id-146' size-in-bits='64' id='type-id-147'/>
-    <function-decl name='zfs_crypto_create' mangled-name='zfs_crypto_create' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='993' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_crypto_create'>
-      <parameter type-id='type-id-23' name='hdl' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='993' column='1'/>
-      <parameter type-id='type-id-29' name='parent_name' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='993' column='1'/>
-      <parameter type-id='type-id-28' name='props' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='993' column='1'/>
-      <parameter type-id='type-id-28' name='pool_props' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='994' column='1'/>
-      <parameter type-id='type-id-6' name='stdin_available' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='994' column='1'/>
-      <parameter type-id='type-id-145' name='wkeydata_out' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='994' column='1'/>
-      <parameter type-id='type-id-147' name='wkeylen_out' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='995' column='1'/>
+    <function-decl name='zfs_crypto_create' mangled-name='zfs_crypto_create' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='996' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_crypto_create'>
+      <parameter type-id='type-id-23' name='hdl' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='996' column='1'/>
+      <parameter type-id='type-id-29' name='parent_name' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='996' column='1'/>
+      <parameter type-id='type-id-28' name='props' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='996' column='1'/>
+      <parameter type-id='type-id-28' name='pool_props' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='997' column='1'/>
+      <parameter type-id='type-id-6' name='stdin_available' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='997' column='1'/>
+      <parameter type-id='type-id-145' name='wkeydata_out' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='997' column='1'/>
+      <parameter type-id='type-id-147' name='wkeylen_out' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='998' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='zfs_prop_to_name' filepath='../../include/libzfs.h' line='491' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -1840,16 +1840,16 @@
       <parameter type-id='type-id-45'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <function-decl name='zfs_crypto_clone_check' mangled-name='zfs_crypto_clone_check' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1165' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_crypto_clone_check'>
-      <parameter type-id='type-id-23' name='hdl' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1165' column='1'/>
-      <parameter type-id='type-id-98' name='origin_zhp' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1165' column='1'/>
-      <parameter type-id='type-id-29' name='parent_name' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1166' column='1'/>
-      <parameter type-id='type-id-28' name='props' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1166' column='1'/>
+    <function-decl name='zfs_crypto_clone_check' mangled-name='zfs_crypto_clone_check' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1168' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_crypto_clone_check'>
+      <parameter type-id='type-id-23' name='hdl' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1168' column='1'/>
+      <parameter type-id='type-id-98' name='origin_zhp' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1168' column='1'/>
+      <parameter type-id='type-id-29' name='parent_name' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1169' column='1'/>
+      <parameter type-id='type-id-28' name='props' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1169' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <function-decl name='zfs_crypto_attempt_load_keys' mangled-name='zfs_crypto_attempt_load_keys' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1231' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_crypto_attempt_load_keys'>
-      <parameter type-id='type-id-23' name='hdl' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1231' column='1'/>
-      <parameter type-id='type-id-29' name='fsname' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1231' column='1'/>
+    <function-decl name='zfs_crypto_attempt_load_keys' mangled-name='zfs_crypto_attempt_load_keys' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1234' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_crypto_attempt_load_keys'>
+      <parameter type-id='type-id-23' name='hdl' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1234' column='1'/>
+      <parameter type-id='type-id-29' name='fsname' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1234' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='zfs_handle_dup' filepath='../../include/libzfs.h' line='468' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -1862,10 +1862,10 @@
       <parameter type-id='type-id-21'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <function-decl name='zfs_crypto_load_key' mangled-name='zfs_crypto_load_key' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1266' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_crypto_load_key'>
-      <parameter type-id='type-id-98' name='zhp' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1266' column='1'/>
-      <parameter type-id='type-id-6' name='noop' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1266' column='1'/>
-      <parameter type-id='type-id-29' name='alt_keylocation' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1266' column='1'/>
+    <function-decl name='zfs_crypto_load_key' mangled-name='zfs_crypto_load_key' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1269' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_crypto_load_key'>
+      <parameter type-id='type-id-98' name='zhp' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1269' column='1'/>
+      <parameter type-id='type-id-6' name='noop' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1269' column='1'/>
+      <parameter type-id='type-id-29' name='alt_keylocation' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1269' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='lzc_load_key' filepath='../../include/libzfs_core.h' line='62' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -2022,18 +2022,18 @@
       <parameter type-id='type-id-78'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <function-decl name='zfs_crypto_unload_key' mangled-name='zfs_crypto_unload_key' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1434' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_crypto_unload_key'>
-      <parameter type-id='type-id-98' name='zhp' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1434' column='1'/>
+    <function-decl name='zfs_crypto_unload_key' mangled-name='zfs_crypto_unload_key' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1437' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_crypto_unload_key'>
+      <parameter type-id='type-id-98' name='zhp' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1437' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='lzc_unload_key' filepath='../../include/libzfs_core.h' line='63' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-89'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <function-decl name='zfs_crypto_rewrap' mangled-name='zfs_crypto_rewrap' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1570' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_crypto_rewrap'>
-      <parameter type-id='type-id-98' name='zhp' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1570' column='1'/>
-      <parameter type-id='type-id-28' name='raw_props' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1570' column='1'/>
-      <parameter type-id='type-id-6' name='inheritkey' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1570' column='1'/>
+    <function-decl name='zfs_crypto_rewrap' mangled-name='zfs_crypto_rewrap' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1573' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_crypto_rewrap'>
+      <parameter type-id='type-id-98' name='zhp' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1573' column='1'/>
+      <parameter type-id='type-id-28' name='raw_props' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1573' column='1'/>
+      <parameter type-id='type-id-6' name='inheritkey' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_crypto.c' line='1573' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='zfs_parent_name' filepath='../../include/libzfs.h' line='814' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -2710,7 +2710,7 @@
       <parameter type-id='type-id-89'/>
       <return type-id='type-id-13'/>
     </function-decl>
-    <function-decl name='zfs_nicestrtonum' filepath='../../include/libzfs.h' line='866' column='1' visibility='default' binding='global' size-in-bits='64'>
+    <function-decl name='zfs_nicestrtonum' filepath='../../include/libzfs.h' line='868' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-99'/>
       <parameter type-id='type-id-89'/>
       <parameter type-id='type-id-110'/>
@@ -3191,11 +3191,11 @@
       <parameter type-id='type-id-28' name='props' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_dataset.c' line='3610' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <function-decl name='zfs_share' filepath='../../include/libzfs.h' line='841' column='1' visibility='default' binding='global' size-in-bits='64'>
+    <function-decl name='zfs_share' filepath='../../include/libzfs.h' line='843' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-87'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <function-decl name='zfs_commit_all_shares' filepath='../../include/libzfs.h' line='863' column='1' visibility='default' binding='global' size-in-bits='64'>
+    <function-decl name='zfs_commit_all_shares' filepath='../../include/libzfs.h' line='865' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-20'/>
     </function-decl>
     <function-decl name='dataset_nestcheck' filepath='../../include/zfs_namecheck.h' line='62' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -3715,7 +3715,7 @@
       </data-member>
     </class-decl>
     <pointer-type-def type-id='type-id-276' size-in-bits='64' id='type-id-277'/>
-    <function-decl name='find_shares_object' filepath='../../include/libzfs_impl.h' line='257' column='1' visibility='default' binding='global' size-in-bits='64'>
+    <function-decl name='find_shares_object' filepath='../../include/libzfs_impl.h' line='256' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-277'/>
       <return type-id='type-id-1'/>
     </function-decl>
@@ -4441,7 +4441,7 @@
     </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='libzfs_pool.c' comp-dir-path='/home/nabijaczleweli/store/code/zfs/lib/libzfs' language='LANG_C99'>
-    <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='../../include/libzfs.h' line='924' column='1' id='type-id-331'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='../../include/libzfs.h' line='926' column='1' id='type-id-331'>
       <underlying-type type-id='type-id-7'/>
       <enumerator name='ZPOOL_COMPATIBILITY_OK' value='0'/>
       <enumerator name='ZPOOL_COMPATIBILITY_WARNTOKEN' value='1'/>
@@ -4449,7 +4449,7 @@
       <enumerator name='ZPOOL_COMPATIBILITY_BADFILE' value='3'/>
       <enumerator name='ZPOOL_COMPATIBILITY_NOFILES' value='4'/>
     </enum-decl>
-    <typedef-decl name='zpool_compat_status_t' type-id='type-id-331' filepath='../../include/libzfs.h' line='930' column='1' id='type-id-332'/>
+    <typedef-decl name='zpool_compat_status_t' type-id='type-id-331' filepath='../../include/libzfs.h' line='932' column='1' id='type-id-332'/>
     <function-decl name='zpool_load_compat' mangled-name='zpool_load_compat' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_pool.c' line='4751' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zpool_load_compat'>
       <parameter type-id='type-id-89' name='compat' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_pool.c' line='4751' column='1'/>
       <parameter type-id='type-id-114' name='features' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_pool.c' line='4751' column='1'/>
@@ -5024,7 +5024,7 @@
       <parameter type-id='type-id-45'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <function-decl name='zpool_relabel_disk' filepath='../../include/libzfs_impl.h' line='255' column='1' visibility='default' binding='global' size-in-bits='64'>
+    <function-decl name='zpool_relabel_disk' filepath='../../include/libzfs_impl.h' line='254' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-99'/>
       <parameter type-id='type-id-89'/>
       <parameter type-id='type-id-89'/>
@@ -5466,10 +5466,6 @@
       <parameter type-id='type-id-112'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <function-decl name='fnvlist_size' filepath='../../include/sys/nvpair.h' line='278' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-112'/>
-      <return type-id='type-id-45'/>
-    </function-decl>
     <function-decl name='fletcher_4_incremental_native' filepath='../../include/zfs_fletcher.h' line='59' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-21'/>
       <parameter type-id='type-id-45'/>
@@ -5481,6 +5477,10 @@
       <parameter type-id='type-id-21'/>
       <parameter type-id='type-id-45'/>
       <return type-id='type-id-59'/>
+    </function-decl>
+    <function-decl name='fnvlist_size' filepath='../../include/sys/nvpair.h' line='278' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-112'/>
+      <return type-id='type-id-45'/>
     </function-decl>
     <function-decl name='nvlist_lookup_boolean' filepath='../../include/sys/nvpair.h' line='202' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-112'/>
@@ -5580,7 +5580,7 @@
       <parameter type-id='type-id-379' name='stream_avl' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_sendrecv.c' line='5132' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <function-decl name='libzfs_set_pipe_max' filepath='../../include/libzfs_impl.h' line='258' column='1' visibility='default' binding='global' size-in-bits='64'>
+    <function-decl name='libzfs_set_pipe_max' filepath='../../include/libzfs_impl.h' line='257' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-1'/>
       <return type-id='type-id-20'/>
     </function-decl>
@@ -6158,7 +6158,7 @@
       <parameter type-id='type-id-414' name='errata' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_status.c' line='509' column='1'/>
       <return type-id='type-id-412'/>
     </function-decl>
-    <function-decl name='zpool_load_compat' filepath='../../include/libzfs.h' line='932' column='1' visibility='default' binding='global' size-in-bits='64'>
+    <function-decl name='zpool_load_compat' filepath='../../include/libzfs.h' line='934' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-89'/>
       <parameter type-id='type-id-305'/>
       <parameter type-id='type-id-29'/>
@@ -6303,6 +6303,9 @@
       <parameter type-id='type-id-1' name='flags' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_util.c' line='946' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
+    <function-decl name='fork' filepath='/usr/include/unistd.h' line='756' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <return type-id='type-id-1'/>
+    </function-decl>
     <function-decl name='waitpid' filepath='/usr/include/x86_64-linux-gnu/sys/wait.h' line='100' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-1'/>
       <parameter type-id='type-id-231'/>
@@ -6316,23 +6319,23 @@
     </function-decl>
     <qualified-type-def type-id='type-id-29' const='yes' id='type-id-417'/>
     <pointer-type-def type-id='type-id-417' size-in-bits='64' id='type-id-418'/>
-    <function-decl name='execvp' filepath='/usr/include/unistd.h' line='578' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-89'/>
-      <parameter type-id='type-id-418'/>
-      <return type-id='type-id-1'/>
-    </function-decl>
     <function-decl name='execv' filepath='/usr/include/unistd.h' line='563' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-89'/>
       <parameter type-id='type-id-418'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <function-decl name='execvpe' filepath='/usr/include/unistd.h' line='590' column='1' visibility='default' binding='global' size-in-bits='64'>
+    <function-decl name='execvp' filepath='/usr/include/unistd.h' line='578' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-89'/>
+      <parameter type-id='type-id-418'/>
+      <return type-id='type-id-1'/>
+    </function-decl>
+    <function-decl name='execve' filepath='/usr/include/unistd.h' line='551' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-89'/>
       <parameter type-id='type-id-418'/>
       <parameter type-id='type-id-418'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <function-decl name='execve' filepath='/usr/include/unistd.h' line='551' column='1' visibility='default' binding='global' size-in-bits='64'>
+    <function-decl name='execvpe' filepath='/usr/include/unistd.h' line='590' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-89'/>
       <parameter type-id='type-id-418'/>
       <parameter type-id='type-id-418'/>
@@ -6372,7 +6375,7 @@
     <function-decl name='libzfs_init' mangled-name='libzfs_init' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_util.c' line='1008' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='libzfs_init'>
       <return type-id='type-id-23'/>
     </function-decl>
-    <function-decl name='libzfs_load_module' filepath='../../include/libzfs_impl.h' line='254' column='1' visibility='default' binding='global' size-in-bits='64'>
+    <function-decl name='libzfs_load_module' filepath='../../include/libzfs_impl.h' line='253' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-1'/>
     </function-decl>
     <pointer-type-def type-id='type-id-74' size-in-bits='64' id='type-id-420'/>
@@ -6795,7 +6798,7 @@
     <function-decl name='zfs_version_print' mangled-name='zfs_version_print' filepath='/home/nabijaczleweli/store/code/zfs/lib/libzfs/libzfs_util.c' line='1978' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_version_print'>
       <return type-id='type-id-1'/>
     </function-decl>
-    <function-decl name='zfs_version_kernel' filepath='../../include/libzfs.h' line='889' column='1' visibility='default' binding='global' size-in-bits='64'>
+    <function-decl name='zfs_version_kernel' filepath='../../include/libzfs.h' line='891' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-29'/>
       <parameter type-id='type-id-1'/>
       <return type-id='type-id-1'/>
@@ -6856,8 +6859,8 @@
       <parameter type-id='type-id-1'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <function-decl name='zfs_mount_delegation_check' mangled-name='zfs_mount_delegation_check' filepath='os/linux/libzfs_mount_os.c' line='410' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_mount_delegation_check'>
-      <return type-id='type-id-1'/>
+    <function-decl name='zfs_could_mount' mangled-name='zfs_could_mount' filepath='os/linux/libzfs_mount_os.c' line='410' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_could_mount'>
+      <return type-id='type-id-6'/>
     </function-decl>
     <function-decl name='geteuid' filepath='/usr/include/unistd.h' line='678' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-19'/>
@@ -7261,17 +7264,6 @@
       <parameter type-id='type-id-89' name='guid' filepath='../../module/zcommon/zfeature_common.c' line='96' column='1'/>
       <return type-id='type-id-6'/>
     </function-decl>
-    <pointer-type-def type-id='type-id-492' size-in-bits='64' id='type-id-501'/>
-    <function-decl name='zfeature_lookup_guid' mangled-name='zfeature_lookup_guid' filepath='../../module/zcommon/zfeature_common.c' line='112' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfeature_lookup_guid'>
-      <parameter type-id='type-id-89' name='guid' filepath='../../module/zcommon/zfeature_common.c' line='112' column='1'/>
-      <parameter type-id='type-id-501' name='res' filepath='../../module/zcommon/zfeature_common.c' line='112' column='1'/>
-      <return type-id='type-id-1'/>
-    </function-decl>
-    <function-decl name='zfeature_lookup_name' mangled-name='zfeature_lookup_name' filepath='../../module/zcommon/zfeature_common.c' line='129' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfeature_lookup_name'>
-      <parameter type-id='type-id-89' name='guid' filepath='../../module/zcommon/zfeature_common.c' line='112' column='1'/>
-      <parameter type-id='type-id-501' name='res' filepath='../../module/zcommon/zfeature_common.c' line='112' column='1'/>
-      <return type-id='type-id-1'/>
-    </function-decl>
     <function-decl name='zfeature_depends_on' mangled-name='zfeature_depends_on' filepath='../../module/zcommon/zfeature_common.c' line='146' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfeature_depends_on'>
       <parameter type-id='type-id-492' name='fid' filepath='../../module/zcommon/zfeature_common.c' line='146' column='1'/>
       <parameter type-id='type-id-492' name='check' filepath='../../module/zcommon/zfeature_common.c' line='146' column='1'/>
@@ -7285,11 +7277,11 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../module/zcommon/zfs_comutil.c' comp-dir-path='/home/nabijaczleweli/store/code/zfs/lib/libzfs' language='LANG_C99'>
 
-    <array-type-def dimensions='1' type-id='type-id-89' size-in-bits='2624' id='type-id-502'>
-      <subrange length='41' type-id='type-id-43' id='type-id-503'/>
+    <array-type-def dimensions='1' type-id='type-id-89' size-in-bits='2624' id='type-id-501'>
+      <subrange length='41' type-id='type-id-43' id='type-id-502'/>
 
     </array-type-def>
-    <var-decl name='zfs_history_event_names' type-id='type-id-502' mangled-name='zfs_history_event_names' visibility='default' filepath='../../module/zcommon/zfs_comutil.c' line='194' column='1' elf-symbol-id='zfs_history_event_names'/>
+    <var-decl name='zfs_history_event_names' type-id='type-id-501' mangled-name='zfs_history_event_names' visibility='default' filepath='../../module/zcommon/zfs_comutil.c' line='194' column='1' elf-symbol-id='zfs_history_event_names'/>
     <function-decl name='zfs_allocatable_devs' mangled-name='zfs_allocatable_devs' filepath='../../module/zcommon/zfs_comutil.c' line='46' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_allocatable_devs'>
       <parameter type-id='type-id-28' name='nv' filepath='../../module/zcommon/zfs_comutil.c' line='46' column='1'/>
       <return type-id='type-id-6'/>
@@ -7299,11 +7291,11 @@
       <parameter type-id='type-id-29' name='type' filepath='../../module/zcommon/zfs_comutil.c' line='71' column='1'/>
       <return type-id='type-id-6'/>
     </function-decl>
-    <typedef-decl name='zpool_load_policy_t' type-id='type-id-344' filepath='../../include/sys/fs/zfs.h' line='596' column='1' id='type-id-504'/>
-    <pointer-type-def type-id='type-id-504' size-in-bits='64' id='type-id-505'/>
+    <typedef-decl name='zpool_load_policy_t' type-id='type-id-344' filepath='../../include/sys/fs/zfs.h' line='596' column='1' id='type-id-503'/>
+    <pointer-type-def type-id='type-id-503' size-in-bits='64' id='type-id-504'/>
     <function-decl name='zpool_get_load_policy' mangled-name='zpool_get_load_policy' filepath='../../module/zcommon/zfs_comutil.c' line='99' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zpool_get_load_policy'>
       <parameter type-id='type-id-28' name='nvl' filepath='../../module/zcommon/zfs_comutil.c' line='99' column='1'/>
-      <parameter type-id='type-id-505' name='zlpp' filepath='../../module/zcommon/zfs_comutil.c' line='99' column='1'/>
+      <parameter type-id='type-id-504' name='zlpp' filepath='../../module/zcommon/zfs_comutil.c' line='99' column='1'/>
       <return type-id='type-id-20'/>
     </function-decl>
     <function-decl name='nvpair_value_uint32' filepath='../../include/sys/nvpair.h' line='254' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -7325,15 +7317,15 @@
     </function-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../module/zcommon/zfs_deleg.c' comp-dir-path='/home/nabijaczleweli/store/code/zfs/lib/libzfs' language='LANG_C99'>
-    <class-decl name='zfs_deleg_perm_tab' size-in-bits='128' is-struct='yes' visibility='default' filepath='../../include/zfs_deleg.h' line='83' column='1' id='type-id-506'>
+    <class-decl name='zfs_deleg_perm_tab' size-in-bits='128' is-struct='yes' visibility='default' filepath='../../include/zfs_deleg.h' line='83' column='1' id='type-id-505'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='z_perm' type-id='type-id-29' visibility='default' filepath='../../include/zfs_deleg.h' line='84' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='z_note' type-id='type-id-507' visibility='default' filepath='../../include/zfs_deleg.h' line='85' column='1'/>
+        <var-decl name='z_note' type-id='type-id-506' visibility='default' filepath='../../include/zfs_deleg.h' line='85' column='1'/>
       </data-member>
     </class-decl>
-    <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='../../include/zfs_deleg.h' line='48' column='1' id='type-id-508'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='../../include/zfs_deleg.h' line='48' column='1' id='type-id-507'>
       <underlying-type type-id='type-id-7'/>
       <enumerator name='ZFS_DELEG_NOTE_CREATE' value='0'/>
       <enumerator name='ZFS_DELEG_NOTE_DESTROY' value='1'/>
@@ -7368,14 +7360,14 @@
       <enumerator name='ZFS_DELEG_NOTE_PROJECTOBJQUOTA' value='30'/>
       <enumerator name='ZFS_DELEG_NOTE_NONE' value='31'/>
     </enum-decl>
-    <typedef-decl name='zfs_deleg_note_t' type-id='type-id-508' filepath='../../include/zfs_deleg.h' line='81' column='1' id='type-id-507'/>
-    <typedef-decl name='zfs_deleg_perm_tab_t' type-id='type-id-506' filepath='../../include/zfs_deleg.h' line='86' column='1' id='type-id-509'/>
+    <typedef-decl name='zfs_deleg_note_t' type-id='type-id-507' filepath='../../include/zfs_deleg.h' line='81' column='1' id='type-id-506'/>
+    <typedef-decl name='zfs_deleg_perm_tab_t' type-id='type-id-505' filepath='../../include/zfs_deleg.h' line='86' column='1' id='type-id-508'/>
 
-    <array-type-def dimensions='1' type-id='type-id-509' size-in-bits='4096' id='type-id-510'>
+    <array-type-def dimensions='1' type-id='type-id-508' size-in-bits='4096' id='type-id-509'>
       <subrange length='32' type-id='type-id-43' id='type-id-214'/>
 
     </array-type-def>
-    <var-decl name='zfs_deleg_perm_tab' type-id='type-id-510' mangled-name='zfs_deleg_perm_tab' visibility='default' filepath='../../module/zcommon/zfs_deleg.c' line='45' column='1' elf-symbol-id='zfs_deleg_perm_tab'/>
+    <var-decl name='zfs_deleg_perm_tab' type-id='type-id-509' mangled-name='zfs_deleg_perm_tab' visibility='default' filepath='../../module/zcommon/zfs_deleg.c' line='45' column='1' elf-symbol-id='zfs_deleg_perm_tab'/>
     <function-decl name='zfs_deleg_canonicalize_perm' mangled-name='zfs_deleg_canonicalize_perm' filepath='../../module/zcommon/zfs_deleg.c' line='90' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_deleg_canonicalize_perm'>
       <parameter type-id='type-id-89' name='perm' filepath='../../module/zcommon/zfs_deleg.c' line='90' column='1'/>
       <return type-id='type-id-89'/>
@@ -7394,7 +7386,7 @@
       <parameter type-id='type-id-29'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='../../include/sys/fs/zfs.h' line='340' column='1' id='type-id-511'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='../../include/sys/fs/zfs.h' line='340' column='1' id='type-id-510'>
       <underlying-type type-id='type-id-7'/>
       <enumerator name='ZFS_DELEG_WHO_UNKNOWN' value='0'/>
       <enumerator name='ZFS_DELEG_USER' value='117'/>
@@ -7408,124 +7400,124 @@
       <enumerator name='ZFS_DELEG_NAMED_SET' value='115'/>
       <enumerator name='ZFS_DELEG_NAMED_SET_SETS' value='83'/>
     </enum-decl>
-    <typedef-decl name='zfs_deleg_who_type_t' type-id='type-id-511' filepath='../../include/sys/fs/zfs.h' line='352' column='1' id='type-id-512'/>
+    <typedef-decl name='zfs_deleg_who_type_t' type-id='type-id-510' filepath='../../include/sys/fs/zfs.h' line='352' column='1' id='type-id-511'/>
     <function-decl name='zfs_deleg_whokey' mangled-name='zfs_deleg_whokey' filepath='../../module/zcommon/zfs_deleg.c' line='211' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_deleg_whokey'>
       <parameter type-id='type-id-29' name='attr' filepath='../../module/zcommon/zfs_deleg.c' line='211' column='1'/>
-      <parameter type-id='type-id-512' name='type' filepath='../../module/zcommon/zfs_deleg.c' line='211' column='1'/>
+      <parameter type-id='type-id-511' name='type' filepath='../../module/zcommon/zfs_deleg.c' line='211' column='1'/>
       <parameter type-id='type-id-42' name='inheritchr' filepath='../../module/zcommon/zfs_deleg.c' line='212' column='1'/>
       <parameter type-id='type-id-21' name='data' filepath='../../module/zcommon/zfs_deleg.c' line='212' column='1'/>
       <return type-id='type-id-20'/>
     </function-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../module/zcommon/zfs_fletcher.c' comp-dir-path='/home/nabijaczleweli/store/code/zfs/lib/libzfs' language='LANG_C99'>
-    <class-decl name='zio_abd_checksum_func' size-in-bits='192' is-struct='yes' visibility='default' filepath='../../include/sys/zio_checksum.h' line='77' column='1' id='type-id-513'>
+    <class-decl name='zio_abd_checksum_func' size-in-bits='192' is-struct='yes' visibility='default' filepath='../../include/sys/zio_checksum.h' line='77' column='1' id='type-id-512'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='acf_init' type-id='type-id-514' visibility='default' filepath='../../include/sys/zio_checksum.h' line='78' column='1'/>
+        <var-decl name='acf_init' type-id='type-id-513' visibility='default' filepath='../../include/sys/zio_checksum.h' line='78' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='acf_fini' type-id='type-id-515' visibility='default' filepath='../../include/sys/zio_checksum.h' line='79' column='1'/>
+        <var-decl name='acf_fini' type-id='type-id-514' visibility='default' filepath='../../include/sys/zio_checksum.h' line='79' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
-        <var-decl name='acf_iter' type-id='type-id-516' visibility='default' filepath='../../include/sys/zio_checksum.h' line='80' column='1'/>
+        <var-decl name='acf_iter' type-id='type-id-515' visibility='default' filepath='../../include/sys/zio_checksum.h' line='80' column='1'/>
       </data-member>
     </class-decl>
-    <class-decl name='zio_abd_checksum_data' size-in-bits='256' is-struct='yes' visibility='default' filepath='../../include/sys/zio_checksum.h' line='66' column='1' id='type-id-517'>
+    <class-decl name='zio_abd_checksum_data' size-in-bits='256' is-struct='yes' visibility='default' filepath='../../include/sys/zio_checksum.h' line='66' column='1' id='type-id-516'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='acd_byteorder' type-id='type-id-518' visibility='default' filepath='../../include/sys/zio_checksum.h' line='67' column='1'/>
+        <var-decl name='acd_byteorder' type-id='type-id-517' visibility='default' filepath='../../include/sys/zio_checksum.h' line='67' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='acd_ctx' type-id='type-id-519' visibility='default' filepath='../../include/sys/zio_checksum.h' line='68' column='1'/>
+        <var-decl name='acd_ctx' type-id='type-id-518' visibility='default' filepath='../../include/sys/zio_checksum.h' line='68' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
-        <var-decl name='acd_zcp' type-id='type-id-520' visibility='default' filepath='../../include/sys/zio_checksum.h' line='69' column='1'/>
+        <var-decl name='acd_zcp' type-id='type-id-519' visibility='default' filepath='../../include/sys/zio_checksum.h' line='69' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
         <var-decl name='acd_private' type-id='type-id-21' visibility='default' filepath='../../include/sys/zio_checksum.h' line='70' column='1'/>
       </data-member>
     </class-decl>
-    <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='../../include/sys/zio_checksum.h' line='61' column='1' id='type-id-521'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='../../include/sys/zio_checksum.h' line='61' column='1' id='type-id-520'>
       <underlying-type type-id='type-id-7'/>
       <enumerator name='ZIO_CHECKSUM_NATIVE' value='0'/>
       <enumerator name='ZIO_CHECKSUM_BYTESWAP' value='1'/>
     </enum-decl>
-    <typedef-decl name='zio_byteorder_t' type-id='type-id-521' filepath='../../include/sys/zio_checksum.h' line='64' column='1' id='type-id-518'/>
-    <union-decl name='fletcher_4_ctx' size-in-bits='2048' visibility='default' filepath='../../include/zfs_fletcher.h' line='90' column='1' id='type-id-522'>
+    <typedef-decl name='zio_byteorder_t' type-id='type-id-520' filepath='../../include/sys/zio_checksum.h' line='64' column='1' id='type-id-517'/>
+    <union-decl name='fletcher_4_ctx' size-in-bits='2048' visibility='default' filepath='../../include/zfs_fletcher.h' line='90' column='1' id='type-id-521'>
       <data-member access='private'>
         <var-decl name='scalar' type-id='type-id-394' visibility='default' filepath='../../include/zfs_fletcher.h' line='91' column='1'/>
       </data-member>
       <data-member access='private'>
-        <var-decl name='superscalar' type-id='type-id-523' visibility='default' filepath='../../include/zfs_fletcher.h' line='92' column='1'/>
+        <var-decl name='superscalar' type-id='type-id-522' visibility='default' filepath='../../include/zfs_fletcher.h' line='92' column='1'/>
       </data-member>
       <data-member access='private'>
-        <var-decl name='sse' type-id='type-id-524' visibility='default' filepath='../../include/zfs_fletcher.h' line='95' column='1'/>
+        <var-decl name='sse' type-id='type-id-523' visibility='default' filepath='../../include/zfs_fletcher.h' line='95' column='1'/>
       </data-member>
       <data-member access='private'>
-        <var-decl name='avx' type-id='type-id-525' visibility='default' filepath='../../include/zfs_fletcher.h' line='98' column='1'/>
+        <var-decl name='avx' type-id='type-id-524' visibility='default' filepath='../../include/zfs_fletcher.h' line='98' column='1'/>
       </data-member>
       <data-member access='private'>
-        <var-decl name='avx512' type-id='type-id-526' visibility='default' filepath='../../include/zfs_fletcher.h' line='101' column='1'/>
+        <var-decl name='avx512' type-id='type-id-525' visibility='default' filepath='../../include/zfs_fletcher.h' line='101' column='1'/>
       </data-member>
     </union-decl>
-    <class-decl name='zfs_fletcher_superscalar' size-in-bits='256' is-struct='yes' visibility='default' filepath='../../include/zfs_fletcher.h' line='69' column='1' id='type-id-527'>
+    <class-decl name='zfs_fletcher_superscalar' size-in-bits='256' is-struct='yes' visibility='default' filepath='../../include/zfs_fletcher.h' line='69' column='1' id='type-id-526'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='v' type-id='type-id-373' visibility='default' filepath='../../include/zfs_fletcher.h' line='70' column='1'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='zfs_fletcher_superscalar_t' type-id='type-id-527' filepath='../../include/zfs_fletcher.h' line='71' column='1' id='type-id-528'/>
+    <typedef-decl name='zfs_fletcher_superscalar_t' type-id='type-id-526' filepath='../../include/zfs_fletcher.h' line='71' column='1' id='type-id-527'/>
 
-    <array-type-def dimensions='1' type-id='type-id-528' size-in-bits='1024' id='type-id-523'>
+    <array-type-def dimensions='1' type-id='type-id-527' size-in-bits='1024' id='type-id-522'>
       <subrange length='4' type-id='type-id-43' id='type-id-225'/>
 
     </array-type-def>
-    <class-decl name='zfs_fletcher_sse' size-in-bits='128' is-struct='yes' visibility='default' filepath='../../include/zfs_fletcher.h' line='73' column='1' id='type-id-529'>
+    <class-decl name='zfs_fletcher_sse' size-in-bits='128' is-struct='yes' visibility='default' filepath='../../include/zfs_fletcher.h' line='73' column='1' id='type-id-528'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='v' type-id='type-id-129' visibility='default' filepath='../../include/zfs_fletcher.h' line='74' column='1'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='zfs_fletcher_sse_t' type-id='type-id-529' filepath='../../include/zfs_fletcher.h' line='75' column='1' id='type-id-530'/>
+    <typedef-decl name='zfs_fletcher_sse_t' type-id='type-id-528' filepath='../../include/zfs_fletcher.h' line='75' column='1' id='type-id-529'/>
 
-    <array-type-def dimensions='1' type-id='type-id-530' size-in-bits='512' id='type-id-524'>
+    <array-type-def dimensions='1' type-id='type-id-529' size-in-bits='512' id='type-id-523'>
       <subrange length='4' type-id='type-id-43' id='type-id-225'/>
 
     </array-type-def>
-    <class-decl name='zfs_fletcher_avx' size-in-bits='256' is-struct='yes' visibility='default' filepath='../../include/zfs_fletcher.h' line='77' column='1' id='type-id-531'>
+    <class-decl name='zfs_fletcher_avx' size-in-bits='256' is-struct='yes' visibility='default' filepath='../../include/zfs_fletcher.h' line='77' column='1' id='type-id-530'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='v' type-id='type-id-373' visibility='default' filepath='../../include/zfs_fletcher.h' line='78' column='1'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='zfs_fletcher_avx_t' type-id='type-id-531' filepath='../../include/zfs_fletcher.h' line='79' column='1' id='type-id-532'/>
+    <typedef-decl name='zfs_fletcher_avx_t' type-id='type-id-530' filepath='../../include/zfs_fletcher.h' line='79' column='1' id='type-id-531'/>
 
-    <array-type-def dimensions='1' type-id='type-id-532' size-in-bits='1024' id='type-id-525'>
+    <array-type-def dimensions='1' type-id='type-id-531' size-in-bits='1024' id='type-id-524'>
       <subrange length='4' type-id='type-id-43' id='type-id-225'/>
 
     </array-type-def>
-    <class-decl name='zfs_fletcher_avx512' size-in-bits='512' is-struct='yes' visibility='default' filepath='../../include/zfs_fletcher.h' line='81' column='1' id='type-id-533'>
+    <class-decl name='zfs_fletcher_avx512' size-in-bits='512' is-struct='yes' visibility='default' filepath='../../include/zfs_fletcher.h' line='81' column='1' id='type-id-532'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='v' type-id='type-id-478' visibility='default' filepath='../../include/zfs_fletcher.h' line='82' column='1'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='zfs_fletcher_avx512_t' type-id='type-id-533' filepath='../../include/zfs_fletcher.h' line='83' column='1' id='type-id-534'/>
+    <typedef-decl name='zfs_fletcher_avx512_t' type-id='type-id-532' filepath='../../include/zfs_fletcher.h' line='83' column='1' id='type-id-533'/>
 
-    <array-type-def dimensions='1' type-id='type-id-534' size-in-bits='2048' id='type-id-526'>
+    <array-type-def dimensions='1' type-id='type-id-533' size-in-bits='2048' id='type-id-525'>
       <subrange length='4' type-id='type-id-43' id='type-id-225'/>
 
     </array-type-def>
-    <typedef-decl name='fletcher_4_ctx_t' type-id='type-id-522' filepath='../../include/zfs_fletcher.h' line='106' column='1' id='type-id-535'/>
-    <pointer-type-def type-id='type-id-535' size-in-bits='64' id='type-id-519'/>
-    <pointer-type-def type-id='type-id-394' size-in-bits='64' id='type-id-520'/>
-    <typedef-decl name='zio_abd_checksum_data_t' type-id='type-id-517' filepath='../../include/sys/zio_checksum.h' line='71' column='1' id='type-id-536'/>
-    <pointer-type-def type-id='type-id-536' size-in-bits='64' id='type-id-537'/>
-    <typedef-decl name='zio_abd_checksum_init_t' type-id='type-id-538' filepath='../../include/sys/zio_checksum.h' line='73' column='1' id='type-id-539'/>
+    <typedef-decl name='fletcher_4_ctx_t' type-id='type-id-521' filepath='../../include/zfs_fletcher.h' line='106' column='1' id='type-id-534'/>
+    <pointer-type-def type-id='type-id-534' size-in-bits='64' id='type-id-518'/>
+    <pointer-type-def type-id='type-id-394' size-in-bits='64' id='type-id-519'/>
+    <typedef-decl name='zio_abd_checksum_data_t' type-id='type-id-516' filepath='../../include/sys/zio_checksum.h' line='71' column='1' id='type-id-535'/>
+    <pointer-type-def type-id='type-id-535' size-in-bits='64' id='type-id-536'/>
+    <typedef-decl name='zio_abd_checksum_init_t' type-id='type-id-537' filepath='../../include/sys/zio_checksum.h' line='73' column='1' id='type-id-538'/>
+    <pointer-type-def type-id='type-id-538' size-in-bits='64' id='type-id-513'/>
+    <typedef-decl name='zio_abd_checksum_fini_t' type-id='type-id-537' filepath='../../include/sys/zio_checksum.h' line='74' column='1' id='type-id-539'/>
     <pointer-type-def type-id='type-id-539' size-in-bits='64' id='type-id-514'/>
-    <typedef-decl name='zio_abd_checksum_fini_t' type-id='type-id-538' filepath='../../include/sys/zio_checksum.h' line='74' column='1' id='type-id-540'/>
-    <pointer-type-def type-id='type-id-540' size-in-bits='64' id='type-id-515'/>
-    <typedef-decl name='zio_abd_checksum_iter_t' type-id='type-id-541' filepath='../../include/sys/zio_checksum.h' line='75' column='1' id='type-id-542'/>
-    <pointer-type-def type-id='type-id-542' size-in-bits='64' id='type-id-516'/>
-    <qualified-type-def type-id='type-id-513' const='yes' id='type-id-543'/>
-    <typedef-decl name='zio_abd_checksum_func_t' type-id='type-id-543' filepath='../../include/sys/zio_checksum.h' line='81' column='1' id='type-id-544'/>
-    <var-decl name='fletcher_4_abd_ops' type-id='type-id-544' mangled-name='fletcher_4_abd_ops' visibility='default' filepath='../../module/zcommon/zfs_fletcher.c' line='882' column='1' elf-symbol-id='fletcher_4_abd_ops'/>
+    <typedef-decl name='zio_abd_checksum_iter_t' type-id='type-id-540' filepath='../../include/sys/zio_checksum.h' line='75' column='1' id='type-id-541'/>
+    <pointer-type-def type-id='type-id-541' size-in-bits='64' id='type-id-515'/>
+    <qualified-type-def type-id='type-id-512' const='yes' id='type-id-542'/>
+    <typedef-decl name='zio_abd_checksum_func_t' type-id='type-id-542' filepath='../../include/sys/zio_checksum.h' line='81' column='1' id='type-id-543'/>
+    <var-decl name='fletcher_4_abd_ops' type-id='type-id-543' mangled-name='fletcher_4_abd_ops' visibility='default' filepath='../../module/zcommon/zfs_fletcher.c' line='882' column='1' elf-symbol-id='fletcher_4_abd_ops'/>
     <function-decl name='fletcher_init' mangled-name='fletcher_init' filepath='../../module/zcommon/zfs_fletcher.c' line='231' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='fletcher_init'>
-      <parameter type-id='type-id-520' name='zcp' filepath='../../module/zcommon/zfs_fletcher.c' line='231' column='1'/>
+      <parameter type-id='type-id-519' name='zcp' filepath='../../module/zcommon/zfs_fletcher.c' line='231' column='1'/>
       <return type-id='type-id-20'/>
     </function-decl>
     <function-decl name='fletcher_2_incremental_native' mangled-name='fletcher_2_incremental_native' filepath='../../module/zcommon/zfs_fletcher.c' line='237' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='fletcher_2_incremental_native'>
@@ -7538,7 +7530,7 @@
       <parameter type-id='type-id-21' name='buf' filepath='../../module/zcommon/zfs_fletcher.c' line='263' column='1'/>
       <parameter type-id='type-id-32' name='size' filepath='../../module/zcommon/zfs_fletcher.c' line='263' column='1'/>
       <parameter type-id='type-id-21' name='ctx_template' filepath='../../module/zcommon/zfs_fletcher.c' line='264' column='1'/>
-      <parameter type-id='type-id-520' name='zcp' filepath='../../module/zcommon/zfs_fletcher.c' line='264' column='1'/>
+      <parameter type-id='type-id-519' name='zcp' filepath='../../module/zcommon/zfs_fletcher.c' line='264' column='1'/>
       <return type-id='type-id-20'/>
     </function-decl>
     <function-decl name='fletcher_2_incremental_byteswap' mangled-name='fletcher_2_incremental_byteswap' filepath='../../module/zcommon/zfs_fletcher.c' line='271' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='fletcher_2_incremental_byteswap'>
@@ -7551,17 +7543,17 @@
       <parameter type-id='type-id-21' name='buf' filepath='../../module/zcommon/zfs_fletcher.c' line='263' column='1'/>
       <parameter type-id='type-id-32' name='size' filepath='../../module/zcommon/zfs_fletcher.c' line='263' column='1'/>
       <parameter type-id='type-id-21' name='ctx_template' filepath='../../module/zcommon/zfs_fletcher.c' line='264' column='1'/>
-      <parameter type-id='type-id-520' name='zcp' filepath='../../module/zcommon/zfs_fletcher.c' line='264' column='1'/>
+      <parameter type-id='type-id-519' name='zcp' filepath='../../module/zcommon/zfs_fletcher.c' line='264' column='1'/>
       <return type-id='type-id-20'/>
     </function-decl>
     <function-decl name='fletcher_4_impl_set' mangled-name='fletcher_4_impl_set' filepath='../../module/zcommon/zfs_fletcher.c' line='369' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='fletcher_4_impl_set'>
       <parameter type-id='type-id-89' name='val' filepath='../../module/zcommon/zfs_fletcher.c' line='369' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <qualified-type-def type-id='type-id-19' volatile='yes' id='type-id-545'/>
-    <pointer-type-def type-id='type-id-545' size-in-bits='64' id='type-id-546'/>
+    <qualified-type-def type-id='type-id-19' volatile='yes' id='type-id-544'/>
+    <pointer-type-def type-id='type-id-544' size-in-bits='64' id='type-id-545'/>
     <function-decl name='atomic_swap_32' filepath='../../lib/libspl/include/atomic.h' line='240' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-546'/>
+      <parameter type-id='type-id-545'/>
       <parameter type-id='type-id-19'/>
       <return type-id='type-id-19'/>
     </function-decl>
@@ -7572,20 +7564,20 @@
       <parameter type-id='type-id-21' name='buf' filepath='../../module/zcommon/zfs_fletcher.c' line='465' column='1'/>
       <parameter type-id='type-id-32' name='size' filepath='../../module/zcommon/zfs_fletcher.c' line='465' column='1'/>
       <parameter type-id='type-id-21' name='ctx_template' filepath='../../module/zcommon/zfs_fletcher.c' line='466' column='1'/>
-      <parameter type-id='type-id-520' name='zcp' filepath='../../module/zcommon/zfs_fletcher.c' line='466' column='1'/>
+      <parameter type-id='type-id-519' name='zcp' filepath='../../module/zcommon/zfs_fletcher.c' line='466' column='1'/>
       <return type-id='type-id-20'/>
     </function-decl>
     <function-decl name='fletcher_4_native_varsize' mangled-name='fletcher_4_native_varsize' filepath='../../module/zcommon/zfs_fletcher.c' line='488' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='fletcher_4_native_varsize'>
       <parameter type-id='type-id-21' name='buf' filepath='../../module/zcommon/zfs_fletcher.c' line='488' column='1'/>
       <parameter type-id='type-id-32' name='size' filepath='../../module/zcommon/zfs_fletcher.c' line='488' column='1'/>
-      <parameter type-id='type-id-520' name='zcp' filepath='../../module/zcommon/zfs_fletcher.c' line='488' column='1'/>
+      <parameter type-id='type-id-519' name='zcp' filepath='../../module/zcommon/zfs_fletcher.c' line='488' column='1'/>
       <return type-id='type-id-20'/>
     </function-decl>
     <function-decl name='fletcher_4_byteswap' mangled-name='fletcher_4_byteswap' filepath='../../module/zcommon/zfs_fletcher.c' line='507' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='fletcher_4_byteswap'>
       <parameter type-id='type-id-21' name='buf' filepath='../../module/zcommon/zfs_fletcher.c' line='465' column='1'/>
       <parameter type-id='type-id-32' name='size' filepath='../../module/zcommon/zfs_fletcher.c' line='465' column='1'/>
       <parameter type-id='type-id-21' name='ctx_template' filepath='../../module/zcommon/zfs_fletcher.c' line='466' column='1'/>
-      <parameter type-id='type-id-520' name='zcp' filepath='../../module/zcommon/zfs_fletcher.c' line='466' column='1'/>
+      <parameter type-id='type-id-519' name='zcp' filepath='../../module/zcommon/zfs_fletcher.c' line='466' column='1'/>
       <return type-id='type-id-20'/>
     </function-decl>
     <function-decl name='fletcher_4_incremental_native' mangled-name='fletcher_4_incremental_native' filepath='../../module/zcommon/zfs_fletcher.c' line='577' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='fletcher_4_incremental_native'>
@@ -7600,86 +7592,86 @@
       <parameter type-id='type-id-21' name='data' filepath='../../module/zcommon/zfs_fletcher.c' line='577' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <function-type size-in-bits='64' id='type-id-541'>
+    <function-type size-in-bits='64' id='type-id-540'>
       <parameter type-id='type-id-21'/>
       <parameter type-id='type-id-38'/>
       <parameter type-id='type-id-21'/>
       <return type-id='type-id-1'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-538'>
-      <parameter type-id='type-id-537'/>
+    <function-type size-in-bits='64' id='type-id-537'>
+      <parameter type-id='type-id-536'/>
       <return type-id='type-id-20'/>
     </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../module/zcommon/zfs_fletcher_avx512.c' comp-dir-path='/home/nabijaczleweli/store/code/zfs/lib/libzfs' language='LANG_C99'>
-    <class-decl name='fletcher_4_func' size-in-bits='512' is-struct='yes' visibility='default' filepath='../../include/zfs_fletcher.h' line='116' column='1' id='type-id-547'>
+    <class-decl name='fletcher_4_func' size-in-bits='512' is-struct='yes' visibility='default' filepath='../../include/zfs_fletcher.h' line='116' column='1' id='type-id-546'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='init_native' type-id='type-id-548' visibility='default' filepath='../../include/zfs_fletcher.h' line='117' column='1'/>
+        <var-decl name='init_native' type-id='type-id-547' visibility='default' filepath='../../include/zfs_fletcher.h' line='117' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='fini_native' type-id='type-id-549' visibility='default' filepath='../../include/zfs_fletcher.h' line='118' column='1'/>
+        <var-decl name='fini_native' type-id='type-id-548' visibility='default' filepath='../../include/zfs_fletcher.h' line='118' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
-        <var-decl name='compute_native' type-id='type-id-550' visibility='default' filepath='../../include/zfs_fletcher.h' line='119' column='1'/>
+        <var-decl name='compute_native' type-id='type-id-549' visibility='default' filepath='../../include/zfs_fletcher.h' line='119' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
-        <var-decl name='init_byteswap' type-id='type-id-548' visibility='default' filepath='../../include/zfs_fletcher.h' line='120' column='1'/>
+        <var-decl name='init_byteswap' type-id='type-id-547' visibility='default' filepath='../../include/zfs_fletcher.h' line='120' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
-        <var-decl name='fini_byteswap' type-id='type-id-549' visibility='default' filepath='../../include/zfs_fletcher.h' line='121' column='1'/>
+        <var-decl name='fini_byteswap' type-id='type-id-548' visibility='default' filepath='../../include/zfs_fletcher.h' line='121' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
-        <var-decl name='compute_byteswap' type-id='type-id-550' visibility='default' filepath='../../include/zfs_fletcher.h' line='122' column='1'/>
+        <var-decl name='compute_byteswap' type-id='type-id-549' visibility='default' filepath='../../include/zfs_fletcher.h' line='122' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
-        <var-decl name='valid' type-id='type-id-551' visibility='default' filepath='../../include/zfs_fletcher.h' line='123' column='1'/>
+        <var-decl name='valid' type-id='type-id-550' visibility='default' filepath='../../include/zfs_fletcher.h' line='123' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='448'>
         <var-decl name='name' type-id='type-id-89' visibility='default' filepath='../../include/zfs_fletcher.h' line='124' column='1'/>
       </data-member>
     </class-decl>
-    <pointer-type-def type-id='type-id-552' size-in-bits='64' id='type-id-553'/>
-    <typedef-decl name='fletcher_4_init_f' type-id='type-id-553' filepath='../../include/zfs_fletcher.h' line='111' column='1' id='type-id-548'/>
-    <pointer-type-def type-id='type-id-554' size-in-bits='64' id='type-id-555'/>
-    <typedef-decl name='fletcher_4_fini_f' type-id='type-id-555' filepath='../../include/zfs_fletcher.h' line='112' column='1' id='type-id-549'/>
-    <pointer-type-def type-id='type-id-556' size-in-bits='64' id='type-id-557'/>
-    <typedef-decl name='fletcher_4_compute_f' type-id='type-id-557' filepath='../../include/zfs_fletcher.h' line='113' column='1' id='type-id-550'/>
-    <pointer-type-def type-id='type-id-558' size-in-bits='64' id='type-id-551'/>
-    <typedef-decl name='fletcher_4_ops_t' type-id='type-id-547' filepath='../../include/zfs_fletcher.h' line='125' column='1' id='type-id-559'/>
-    <qualified-type-def type-id='type-id-559' const='yes' id='type-id-560'/>
-    <var-decl name='fletcher_4_avx512f_ops' type-id='type-id-560' mangled-name='fletcher_4_avx512f_ops' visibility='default' filepath='../../module/zcommon/zfs_fletcher_avx512.c' line='165' column='1' elf-symbol-id='fletcher_4_avx512f_ops'/>
-    <var-decl name='fletcher_4_avx512bw_ops' type-id='type-id-560' mangled-name='fletcher_4_avx512bw_ops' visibility='default' filepath='../../module/zcommon/zfs_fletcher_avx512.c' line='219' column='1' elf-symbol-id='fletcher_4_avx512bw_ops'/>
-    <function-type size-in-bits='64' id='type-id-558'>
+    <pointer-type-def type-id='type-id-551' size-in-bits='64' id='type-id-552'/>
+    <typedef-decl name='fletcher_4_init_f' type-id='type-id-552' filepath='../../include/zfs_fletcher.h' line='111' column='1' id='type-id-547'/>
+    <pointer-type-def type-id='type-id-553' size-in-bits='64' id='type-id-554'/>
+    <typedef-decl name='fletcher_4_fini_f' type-id='type-id-554' filepath='../../include/zfs_fletcher.h' line='112' column='1' id='type-id-548'/>
+    <pointer-type-def type-id='type-id-555' size-in-bits='64' id='type-id-556'/>
+    <typedef-decl name='fletcher_4_compute_f' type-id='type-id-556' filepath='../../include/zfs_fletcher.h' line='113' column='1' id='type-id-549'/>
+    <pointer-type-def type-id='type-id-557' size-in-bits='64' id='type-id-550'/>
+    <typedef-decl name='fletcher_4_ops_t' type-id='type-id-546' filepath='../../include/zfs_fletcher.h' line='125' column='1' id='type-id-558'/>
+    <qualified-type-def type-id='type-id-558' const='yes' id='type-id-559'/>
+    <var-decl name='fletcher_4_avx512f_ops' type-id='type-id-559' mangled-name='fletcher_4_avx512f_ops' visibility='default' filepath='../../module/zcommon/zfs_fletcher_avx512.c' line='165' column='1' elf-symbol-id='fletcher_4_avx512f_ops'/>
+    <var-decl name='fletcher_4_avx512bw_ops' type-id='type-id-559' mangled-name='fletcher_4_avx512bw_ops' visibility='default' filepath='../../module/zcommon/zfs_fletcher_avx512.c' line='219' column='1' elf-symbol-id='fletcher_4_avx512bw_ops'/>
+    <function-type size-in-bits='64' id='type-id-557'>
       <return type-id='type-id-6'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-552'>
-      <parameter type-id='type-id-519'/>
+    <function-type size-in-bits='64' id='type-id-551'>
+      <parameter type-id='type-id-518'/>
       <return type-id='type-id-20'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-556'>
-      <parameter type-id='type-id-519'/>
+    <function-type size-in-bits='64' id='type-id-555'>
+      <parameter type-id='type-id-518'/>
       <parameter type-id='type-id-21'/>
       <parameter type-id='type-id-32'/>
       <return type-id='type-id-20'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-554'>
+    <function-type size-in-bits='64' id='type-id-553'>
+      <parameter type-id='type-id-518'/>
       <parameter type-id='type-id-519'/>
-      <parameter type-id='type-id-520'/>
       <return type-id='type-id-20'/>
     </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../module/zcommon/zfs_fletcher_intel.c' comp-dir-path='/home/nabijaczleweli/store/code/zfs/lib/libzfs' language='LANG_C99'>
-    <var-decl name='fletcher_4_avx2_ops' type-id='type-id-560' mangled-name='fletcher_4_avx2_ops' visibility='default' filepath='../../module/zcommon/zfs_fletcher_intel.c' line='162' column='1' elf-symbol-id='fletcher_4_avx2_ops'/>
+    <var-decl name='fletcher_4_avx2_ops' type-id='type-id-559' mangled-name='fletcher_4_avx2_ops' visibility='default' filepath='../../module/zcommon/zfs_fletcher_intel.c' line='162' column='1' elf-symbol-id='fletcher_4_avx2_ops'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../module/zcommon/zfs_fletcher_sse.c' comp-dir-path='/home/nabijaczleweli/store/code/zfs/lib/libzfs' language='LANG_C99'>
-    <var-decl name='fletcher_4_sse2_ops' type-id='type-id-560' mangled-name='fletcher_4_sse2_ops' visibility='default' filepath='../../module/zcommon/zfs_fletcher_sse.c' line='163' column='1' elf-symbol-id='fletcher_4_sse2_ops'/>
-    <var-decl name='fletcher_4_ssse3_ops' type-id='type-id-560' mangled-name='fletcher_4_ssse3_ops' visibility='default' filepath='../../module/zcommon/zfs_fletcher_sse.c' line='221' column='1' elf-symbol-id='fletcher_4_ssse3_ops'/>
+    <var-decl name='fletcher_4_sse2_ops' type-id='type-id-559' mangled-name='fletcher_4_sse2_ops' visibility='default' filepath='../../module/zcommon/zfs_fletcher_sse.c' line='163' column='1' elf-symbol-id='fletcher_4_sse2_ops'/>
+    <var-decl name='fletcher_4_ssse3_ops' type-id='type-id-559' mangled-name='fletcher_4_ssse3_ops' visibility='default' filepath='../../module/zcommon/zfs_fletcher_sse.c' line='221' column='1' elf-symbol-id='fletcher_4_ssse3_ops'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../module/zcommon/zfs_fletcher_superscalar.c' comp-dir-path='/home/nabijaczleweli/store/code/zfs/lib/libzfs' language='LANG_C99'>
-    <var-decl name='fletcher_4_superscalar_ops' type-id='type-id-560' mangled-name='fletcher_4_superscalar_ops' visibility='default' filepath='../../module/zcommon/zfs_fletcher_superscalar.c' line='154' column='1' elf-symbol-id='fletcher_4_superscalar_ops'/>
+    <var-decl name='fletcher_4_superscalar_ops' type-id='type-id-559' mangled-name='fletcher_4_superscalar_ops' visibility='default' filepath='../../module/zcommon/zfs_fletcher_superscalar.c' line='154' column='1' elf-symbol-id='fletcher_4_superscalar_ops'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../module/zcommon/zfs_fletcher_superscalar4.c' comp-dir-path='/home/nabijaczleweli/store/code/zfs/lib/libzfs' language='LANG_C99'>
-    <var-decl name='fletcher_4_superscalar4_ops' type-id='type-id-560' mangled-name='fletcher_4_superscalar4_ops' visibility='default' filepath='../../module/zcommon/zfs_fletcher_superscalar4.c' line='220' column='1' elf-symbol-id='fletcher_4_superscalar4_ops'/>
+    <var-decl name='fletcher_4_superscalar4_ops' type-id='type-id-559' mangled-name='fletcher_4_superscalar4_ops' visibility='default' filepath='../../module/zcommon/zfs_fletcher_superscalar4.c' line='220' column='1' elf-symbol-id='fletcher_4_superscalar4_ops'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../module/zcommon/zfs_namecheck.c' comp-dir-path='/home/nabijaczleweli/store/code/zfs/lib/libzfs' language='LANG_C99'>
     <var-decl name='zfs_max_dataset_nesting' type-id='type-id-1' mangled-name='zfs_max_dataset_nesting' visibility='default' filepath='../../module/zcommon/zfs_namecheck.c' line='55' column='1' elf-symbol-id='zfs_max_dataset_nesting'/>
@@ -7687,74 +7679,74 @@
       <parameter type-id='type-id-89' name='path' filepath='../../module/zcommon/zfs_namecheck.c' line='70' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <typedef-decl name='namecheck_err_t' type-id='type-id-218' filepath='../../include/zfs_namecheck.h' line='50' column='1' id='type-id-561'/>
-    <pointer-type-def type-id='type-id-561' size-in-bits='64' id='type-id-562'/>
+    <typedef-decl name='namecheck_err_t' type-id='type-id-218' filepath='../../include/zfs_namecheck.h' line='50' column='1' id='type-id-560'/>
+    <pointer-type-def type-id='type-id-560' size-in-bits='64' id='type-id-561'/>
     <function-decl name='zfs_component_namecheck' mangled-name='zfs_component_namecheck' filepath='../../module/zcommon/zfs_namecheck.c' line='98' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_component_namecheck'>
       <parameter type-id='type-id-89' name='path' filepath='../../module/zcommon/zfs_namecheck.c' line='98' column='1'/>
-      <parameter type-id='type-id-562' name='why' filepath='../../module/zcommon/zfs_namecheck.c' line='98' column='1'/>
+      <parameter type-id='type-id-561' name='why' filepath='../../module/zcommon/zfs_namecheck.c' line='98' column='1'/>
       <parameter type-id='type-id-29' name='what' filepath='../../module/zcommon/zfs_namecheck.c' line='98' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='permset_namecheck' mangled-name='permset_namecheck' filepath='../../module/zcommon/zfs_namecheck.c' line='135' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='permset_namecheck'>
       <parameter type-id='type-id-89' name='path' filepath='../../module/zcommon/zfs_namecheck.c' line='135' column='1'/>
-      <parameter type-id='type-id-562' name='why' filepath='../../module/zcommon/zfs_namecheck.c' line='135' column='1'/>
+      <parameter type-id='type-id-561' name='why' filepath='../../module/zcommon/zfs_namecheck.c' line='135' column='1'/>
       <parameter type-id='type-id-29' name='what' filepath='../../module/zcommon/zfs_namecheck.c' line='135' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='entity_namecheck' mangled-name='entity_namecheck' filepath='../../module/zcommon/zfs_namecheck.c' line='182' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='entity_namecheck'>
       <parameter type-id='type-id-89' name='path' filepath='../../module/zcommon/zfs_namecheck.c' line='182' column='1'/>
-      <parameter type-id='type-id-562' name='why' filepath='../../module/zcommon/zfs_namecheck.c' line='182' column='1'/>
+      <parameter type-id='type-id-561' name='why' filepath='../../module/zcommon/zfs_namecheck.c' line='182' column='1'/>
       <parameter type-id='type-id-29' name='what' filepath='../../module/zcommon/zfs_namecheck.c' line='182' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='dataset_namecheck' mangled-name='dataset_namecheck' filepath='../../module/zcommon/zfs_namecheck.c' line='300' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dataset_namecheck'>
       <parameter type-id='type-id-89' name='path' filepath='../../module/zcommon/zfs_namecheck.c' line='300' column='1'/>
-      <parameter type-id='type-id-562' name='why' filepath='../../module/zcommon/zfs_namecheck.c' line='300' column='1'/>
+      <parameter type-id='type-id-561' name='why' filepath='../../module/zcommon/zfs_namecheck.c' line='300' column='1'/>
       <parameter type-id='type-id-29' name='what' filepath='../../module/zcommon/zfs_namecheck.c' line='300' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='bookmark_namecheck' mangled-name='bookmark_namecheck' filepath='../../module/zcommon/zfs_namecheck.c' line='319' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='bookmark_namecheck'>
       <parameter type-id='type-id-89' name='path' filepath='../../module/zcommon/zfs_namecheck.c' line='300' column='1'/>
-      <parameter type-id='type-id-562' name='why' filepath='../../module/zcommon/zfs_namecheck.c' line='300' column='1'/>
+      <parameter type-id='type-id-561' name='why' filepath='../../module/zcommon/zfs_namecheck.c' line='300' column='1'/>
       <parameter type-id='type-id-29' name='what' filepath='../../module/zcommon/zfs_namecheck.c' line='300' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='snapshot_namecheck' mangled-name='snapshot_namecheck' filepath='../../module/zcommon/zfs_namecheck.c' line='338' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='snapshot_namecheck'>
       <parameter type-id='type-id-89' name='path' filepath='../../module/zcommon/zfs_namecheck.c' line='300' column='1'/>
-      <parameter type-id='type-id-562' name='why' filepath='../../module/zcommon/zfs_namecheck.c' line='300' column='1'/>
+      <parameter type-id='type-id-561' name='why' filepath='../../module/zcommon/zfs_namecheck.c' line='300' column='1'/>
       <parameter type-id='type-id-29' name='what' filepath='../../module/zcommon/zfs_namecheck.c' line='300' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='mountpoint_namecheck' mangled-name='mountpoint_namecheck' filepath='../../module/zcommon/zfs_namecheck.c' line='361' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='mountpoint_namecheck'>
       <parameter type-id='type-id-89' name='path' filepath='../../module/zcommon/zfs_namecheck.c' line='361' column='1'/>
-      <parameter type-id='type-id-562' name='why' filepath='../../module/zcommon/zfs_namecheck.c' line='361' column='1'/>
+      <parameter type-id='type-id-561' name='why' filepath='../../module/zcommon/zfs_namecheck.c' line='361' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='pool_namecheck' mangled-name='pool_namecheck' filepath='../../module/zcommon/zfs_namecheck.c' line='407' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='pool_namecheck'>
       <parameter type-id='type-id-89' name='path' filepath='../../module/zcommon/zfs_namecheck.c' line='98' column='1'/>
-      <parameter type-id='type-id-562' name='why' filepath='../../module/zcommon/zfs_namecheck.c' line='98' column='1'/>
+      <parameter type-id='type-id-561' name='why' filepath='../../module/zcommon/zfs_namecheck.c' line='98' column='1'/>
       <parameter type-id='type-id-29' name='what' filepath='../../module/zcommon/zfs_namecheck.c' line='98' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../module/zcommon/zfs_prop.c' comp-dir-path='/home/nabijaczleweli/store/code/zfs/lib/libzfs' language='LANG_C99'>
 
-    <array-type-def dimensions='1' type-id='type-id-89' size-in-bits='768' id='type-id-563'>
+    <array-type-def dimensions='1' type-id='type-id-89' size-in-bits='768' id='type-id-562'>
       <subrange length='12' type-id='type-id-43' id='type-id-405'/>
 
     </array-type-def>
-    <var-decl name='zfs_userquota_prop_prefixes' type-id='type-id-563' mangled-name='zfs_userquota_prop_prefixes' visibility='default' filepath='../../module/zcommon/zfs_prop.c' line='53' column='1' elf-symbol-id='zfs_userquota_prop_prefixes'/>
+    <var-decl name='zfs_userquota_prop_prefixes' type-id='type-id-562' mangled-name='zfs_userquota_prop_prefixes' visibility='default' filepath='../../module/zcommon/zfs_prop.c' line='53' column='1' elf-symbol-id='zfs_userquota_prop_prefixes'/>
     <function-decl name='zfs_prop_written' mangled-name='zfs_prop_written' filepath='../../module/zcommon/zfs_prop.c' line='802' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_prop_written'>
       <parameter type-id='type-id-89' name='name' filepath='../../module/zcommon/zfs_prop.c' line='802' column='1'/>
       <return type-id='type-id-6'/>
     </function-decl>
     <typedef-decl name='zprop_desc_t' type-id='type-id-422' filepath='../../include/zfs_prop.h' line='85' column='1' id='type-id-421'/>
-    <pointer-type-def type-id='type-id-421' size-in-bits='64' id='type-id-564'/>
+    <pointer-type-def type-id='type-id-421' size-in-bits='64' id='type-id-563'/>
     <function-decl name='zfs_prop_get_table' mangled-name='zfs_prop_get_table' filepath='../../module/zcommon/zfs_prop.c' line='69' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_prop_get_table'>
-      <return type-id='type-id-564'/>
+      <return type-id='type-id-563'/>
     </function-decl>
-    <qualified-type-def type-id='type-id-427' const='yes' id='type-id-565'/>
-    <pointer-type-def type-id='type-id-565' size-in-bits='64' id='type-id-566'/>
+    <qualified-type-def type-id='type-id-427' const='yes' id='type-id-564'/>
+    <pointer-type-def type-id='type-id-564' size-in-bits='64' id='type-id-565'/>
     <function-decl name='zprop_register_index' filepath='../../include/zfs_prop.h' line='112' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-1'/>
       <parameter type-id='type-id-89'/>
@@ -7763,7 +7755,7 @@
       <parameter type-id='type-id-1'/>
       <parameter type-id='type-id-89'/>
       <parameter type-id='type-id-89'/>
-      <parameter type-id='type-id-566'/>
+      <parameter type-id='type-id-565'/>
       <return type-id='type-id-20'/>
     </function-decl>
     <function-decl name='zprop_register_string' filepath='../../include/zfs_prop.h' line='108' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -7807,7 +7799,7 @@
       <parameter type-id='type-id-89'/>
       <parameter type-id='type-id-13'/>
       <parameter type-id='type-id-13'/>
-      <parameter type-id='type-id-566'/>
+      <parameter type-id='type-id-565'/>
       <return type-id='type-id-20'/>
     </function-decl>
     <function-decl name='zfs_prop_delegatable' mangled-name='zfs_prop_delegatable' filepath='../../module/zcommon/zfs_prop.c' line='720' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_prop_delegatable'>
@@ -7903,19 +7895,19 @@
       <parameter type-id='type-id-6' name='encrypted' filepath='../../module/zcommon/zfs_prop.c' line='931' column='1'/>
       <return type-id='type-id-6'/>
     </function-decl>
-    <function-decl name='zfs_prop_values' mangled-name='zfs_prop_values' filepath='../../module/zcommon/zfs_prop.c' line='954' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_prop_values'>
+    <function-decl name='zfs_prop_values' mangled-name='zfs_prop_values' filepath='../../module/zcommon/zfs_prop.c' line='956' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_prop_values'>
       <parameter type-id='type-id-3' name='prop' filepath='../../module/zcommon/zfs_prop.c' line='879' column='1'/>
       <return type-id='type-id-89'/>
     </function-decl>
-    <function-decl name='zfs_prop_is_string' mangled-name='zfs_prop_is_string' filepath='../../module/zcommon/zfs_prop.c' line='965' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_prop_is_string'>
-      <parameter type-id='type-id-3' name='prop' filepath='../../module/zcommon/zfs_prop.c' line='965' column='1'/>
+    <function-decl name='zfs_prop_is_string' mangled-name='zfs_prop_is_string' filepath='../../module/zcommon/zfs_prop.c' line='967' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_prop_is_string'>
+      <parameter type-id='type-id-3' name='prop' filepath='../../module/zcommon/zfs_prop.c' line='967' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <function-decl name='zfs_prop_column_name' mangled-name='zfs_prop_column_name' filepath='../../module/zcommon/zfs_prop.c' line='976' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_prop_column_name'>
+    <function-decl name='zfs_prop_column_name' mangled-name='zfs_prop_column_name' filepath='../../module/zcommon/zfs_prop.c' line='978' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_prop_column_name'>
       <parameter type-id='type-id-3' name='prop' filepath='../../module/zcommon/zfs_prop.c' line='879' column='1'/>
       <return type-id='type-id-89'/>
     </function-decl>
-    <function-decl name='zfs_prop_align_right' mangled-name='zfs_prop_align_right' filepath='../../module/zcommon/zfs_prop.c' line='986' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_prop_align_right'>
+    <function-decl name='zfs_prop_align_right' mangled-name='zfs_prop_align_right' filepath='../../module/zcommon/zfs_prop.c' line='988' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zfs_prop_align_right'>
       <parameter type-id='type-id-3' name='prop' filepath='../../module/zcommon/zfs_prop.c' line='851' column='1'/>
       <return type-id='type-id-6'/>
     </function-decl>
@@ -7930,7 +7922,7 @@
       <return type-id='type-id-6'/>
     </function-decl>
     <function-decl name='zpool_prop_get_table' mangled-name='zpool_prop_get_table' filepath='../../module/zcommon/zpool_prop.c' line='45' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zpool_prop_get_table'>
-      <return type-id='type-id-564'/>
+      <return type-id='type-id-563'/>
     </function-decl>
     <function-decl name='zpool_name_to_prop' mangled-name='zpool_name_to_prop' filepath='../../module/zcommon/zpool_prop.c' line='156' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='zpool_name_to_prop'>
       <parameter type-id='type-id-89' name='propname' filepath='../../module/zcommon/zpool_prop.c' line='156' column='1'/>
@@ -8103,45 +8095,45 @@
     </function-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='libshare.c' comp-dir-path='/home/nabijaczleweli/store/code/zfs/lib/libshare' language='LANG_C99'>
-    <class-decl name='sa_fstype' size-in-bits='256' is-struct='yes' visibility='default' filepath='./libshare_impl.h' line='55' column='1' id='type-id-567'>
+    <class-decl name='sa_fstype' size-in-bits='256' is-struct='yes' visibility='default' filepath='./libshare_impl.h' line='55' column='1' id='type-id-566'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='next' type-id='type-id-568' visibility='default' filepath='./libshare_impl.h' line='56' column='1'/>
+        <var-decl name='next' type-id='type-id-567' visibility='default' filepath='./libshare_impl.h' line='56' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <var-decl name='name' type-id='type-id-89' visibility='default' filepath='./libshare_impl.h' line='58' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
-        <var-decl name='ops' type-id='type-id-569' visibility='default' filepath='./libshare_impl.h' line='59' column='1'/>
+        <var-decl name='ops' type-id='type-id-568' visibility='default' filepath='./libshare_impl.h' line='59' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
         <var-decl name='fsinfo_index' type-id='type-id-1' visibility='default' filepath='./libshare_impl.h' line='60' column='1'/>
       </data-member>
     </class-decl>
-    <pointer-type-def type-id='type-id-567' size-in-bits='64' id='type-id-568'/>
-    <class-decl name='sa_share_ops' size-in-bits='448' is-struct='yes' visibility='default' filepath='./libshare_impl.h' line='44' column='1' id='type-id-570'>
+    <pointer-type-def type-id='type-id-566' size-in-bits='64' id='type-id-567'/>
+    <class-decl name='sa_share_ops' size-in-bits='448' is-struct='yes' visibility='default' filepath='./libshare_impl.h' line='44' column='1' id='type-id-569'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='enable_share' type-id='type-id-571' visibility='default' filepath='./libshare_impl.h' line='45' column='1'/>
+        <var-decl name='enable_share' type-id='type-id-570' visibility='default' filepath='./libshare_impl.h' line='45' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='disable_share' type-id='type-id-571' visibility='default' filepath='./libshare_impl.h' line='46' column='1'/>
+        <var-decl name='disable_share' type-id='type-id-570' visibility='default' filepath='./libshare_impl.h' line='46' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
-        <var-decl name='is_shared' type-id='type-id-572' visibility='default' filepath='./libshare_impl.h' line='47' column='1'/>
+        <var-decl name='is_shared' type-id='type-id-571' visibility='default' filepath='./libshare_impl.h' line='47' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
-        <var-decl name='validate_shareopts' type-id='type-id-573' visibility='default' filepath='./libshare_impl.h' line='48' column='1'/>
+        <var-decl name='validate_shareopts' type-id='type-id-572' visibility='default' filepath='./libshare_impl.h' line='48' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
-        <var-decl name='update_shareopts' type-id='type-id-574' visibility='default' filepath='./libshare_impl.h' line='49' column='1'/>
+        <var-decl name='update_shareopts' type-id='type-id-573' visibility='default' filepath='./libshare_impl.h' line='49' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
-        <var-decl name='clear_shareopts' type-id='type-id-575' visibility='default' filepath='./libshare_impl.h' line='51' column='1'/>
+        <var-decl name='clear_shareopts' type-id='type-id-574' visibility='default' filepath='./libshare_impl.h' line='51' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
-        <var-decl name='commit_shares' type-id='type-id-576' visibility='default' filepath='./libshare_impl.h' line='52' column='1'/>
+        <var-decl name='commit_shares' type-id='type-id-575' visibility='default' filepath='./libshare_impl.h' line='52' column='1'/>
       </data-member>
     </class-decl>
-    <class-decl name='sa_share_impl' size-in-bits='192' is-struct='yes' visibility='default' filepath='./libshare_impl.h' line='34' column='1' id='type-id-577'>
+    <class-decl name='sa_share_impl' size-in-bits='192' is-struct='yes' visibility='default' filepath='./libshare_impl.h' line='34' column='1' id='type-id-576'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='sa_mountpoint' type-id='type-id-29' visibility='default' filepath='./libshare_impl.h' line='35' column='1'/>
       </data-member>
@@ -8149,33 +8141,33 @@
         <var-decl name='sa_zfsname' type-id='type-id-29' visibility='default' filepath='./libshare_impl.h' line='36' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
-        <var-decl name='sa_fsinfo' type-id='type-id-578' visibility='default' filepath='./libshare_impl.h' line='38' column='1'/>
+        <var-decl name='sa_fsinfo' type-id='type-id-577' visibility='default' filepath='./libshare_impl.h' line='38' column='1'/>
       </data-member>
     </class-decl>
-    <class-decl name='sa_share_fsinfo' size-in-bits='64' is-struct='yes' visibility='default' filepath='./libshare_impl.h' line='30' column='1' id='type-id-579'>
+    <class-decl name='sa_share_fsinfo' size-in-bits='64' is-struct='yes' visibility='default' filepath='./libshare_impl.h' line='30' column='1' id='type-id-578'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='shareopts' type-id='type-id-29' visibility='default' filepath='./libshare_impl.h' line='31' column='1'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='sa_share_fsinfo_t' type-id='type-id-579' filepath='./libshare_impl.h' line='32' column='1' id='type-id-580'/>
-    <pointer-type-def type-id='type-id-580' size-in-bits='64' id='type-id-578'/>
-    <pointer-type-def type-id='type-id-577' size-in-bits='64' id='type-id-581'/>
-    <typedef-decl name='sa_share_impl_t' type-id='type-id-581' filepath='./libshare_impl.h' line='39' column='1' id='type-id-582'/>
+    <typedef-decl name='sa_share_fsinfo_t' type-id='type-id-578' filepath='./libshare_impl.h' line='32' column='1' id='type-id-579'/>
+    <pointer-type-def type-id='type-id-579' size-in-bits='64' id='type-id-577'/>
+    <pointer-type-def type-id='type-id-576' size-in-bits='64' id='type-id-580'/>
+    <typedef-decl name='sa_share_impl_t' type-id='type-id-580' filepath='./libshare_impl.h' line='39' column='1' id='type-id-581'/>
+    <pointer-type-def type-id='type-id-582' size-in-bits='64' id='type-id-570'/>
     <pointer-type-def type-id='type-id-583' size-in-bits='64' id='type-id-571'/>
     <pointer-type-def type-id='type-id-584' size-in-bits='64' id='type-id-572'/>
     <pointer-type-def type-id='type-id-585' size-in-bits='64' id='type-id-573'/>
     <pointer-type-def type-id='type-id-586' size-in-bits='64' id='type-id-574'/>
     <pointer-type-def type-id='type-id-587' size-in-bits='64' id='type-id-575'/>
-    <pointer-type-def type-id='type-id-588' size-in-bits='64' id='type-id-576'/>
-    <typedef-decl name='sa_share_ops_t' type-id='type-id-570' filepath='./libshare_impl.h' line='53' column='1' id='type-id-589'/>
-    <qualified-type-def type-id='type-id-589' const='yes' id='type-id-590'/>
-    <pointer-type-def type-id='type-id-590' size-in-bits='64' id='type-id-569'/>
-    <typedef-decl name='sa_fstype_t' type-id='type-id-567' filepath='./libshare_impl.h' line='61' column='1' id='type-id-591'/>
-    <pointer-type-def type-id='type-id-591' size-in-bits='64' id='type-id-592'/>
+    <typedef-decl name='sa_share_ops_t' type-id='type-id-569' filepath='./libshare_impl.h' line='53' column='1' id='type-id-588'/>
+    <qualified-type-def type-id='type-id-588' const='yes' id='type-id-589'/>
+    <pointer-type-def type-id='type-id-589' size-in-bits='64' id='type-id-568'/>
+    <typedef-decl name='sa_fstype_t' type-id='type-id-566' filepath='./libshare_impl.h' line='61' column='1' id='type-id-590'/>
+    <pointer-type-def type-id='type-id-590' size-in-bits='64' id='type-id-591'/>
     <function-decl name='register_fstype' mangled-name='register_fstype' filepath='/home/nabijaczleweli/store/code/zfs/lib/libshare/libshare.c' line='51' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='register_fstype'>
       <parameter type-id='type-id-89' name='name' filepath='/home/nabijaczleweli/store/code/zfs/lib/libshare/libshare.c' line='51' column='1'/>
-      <parameter type-id='type-id-569' name='ops' filepath='/home/nabijaczleweli/store/code/zfs/lib/libshare/libshare.c' line='51' column='1'/>
-      <return type-id='type-id-592'/>
+      <parameter type-id='type-id-568' name='ops' filepath='/home/nabijaczleweli/store/code/zfs/lib/libshare/libshare.c' line='51' column='1'/>
+      <return type-id='type-id-591'/>
     </function-decl>
     <function-decl name='libshare_nfs_init' filepath='./nfs.h' line='31' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-20'/>
@@ -8188,28 +8180,28 @@
       <parameter type-id='type-id-29' name='protocol' filepath='/home/nabijaczleweli/store/code/zfs/lib/libshare/libshare.c' line='144' column='1'/>
       <return type-id='type-id-6'/>
     </function-decl>
-    <function-type size-in-bits='64' id='type-id-588'>
+    <function-type size-in-bits='64' id='type-id-587'>
+      <return type-id='type-id-1'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-584'>
+      <parameter type-id='type-id-89'/>
+      <return type-id='type-id-1'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-582'>
+      <parameter type-id='type-id-581'/>
       <return type-id='type-id-1'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-585'>
+      <parameter type-id='type-id-581'/>
       <parameter type-id='type-id-89'/>
       <return type-id='type-id-1'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-583'>
-      <parameter type-id='type-id-582'/>
-      <return type-id='type-id-1'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-586'>
-      <parameter type-id='type-id-582'/>
-      <parameter type-id='type-id-89'/>
-      <return type-id='type-id-1'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-584'>
-      <parameter type-id='type-id-582'/>
+      <parameter type-id='type-id-581'/>
       <return type-id='type-id-6'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-587'>
-      <parameter type-id='type-id-582'/>
+    <function-type size-in-bits='64' id='type-id-586'>
+      <parameter type-id='type-id-581'/>
       <return type-id='type-id-20'/>
     </function-type>
   </abi-instr>
@@ -8246,60 +8238,60 @@
       <parameter type-id='type-id-156'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <qualified-type-def type-id='type-id-570' const='yes' id='type-id-593'/>
-    <pointer-type-def type-id='type-id-593' size-in-bits='64' id='type-id-594'/>
+    <qualified-type-def type-id='type-id-569' const='yes' id='type-id-592'/>
+    <pointer-type-def type-id='type-id-592' size-in-bits='64' id='type-id-593'/>
     <function-decl name='register_fstype' filepath='./libshare_impl.h' line='63' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-89'/>
-      <parameter type-id='type-id-594'/>
-      <return type-id='type-id-568'/>
+      <parameter type-id='type-id-593'/>
+      <return type-id='type-id-567'/>
     </function-decl>
-    <pointer-type-def type-id='type-id-595' size-in-bits='64' id='type-id-596'/>
+    <pointer-type-def type-id='type-id-594' size-in-bits='64' id='type-id-595'/>
     <function-decl name='nfs_toggle_share' filepath='./nfs.h' line='34' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-89'/>
       <parameter type-id='type-id-89'/>
       <parameter type-id='type-id-89'/>
-      <parameter type-id='type-id-581'/>
-      <parameter type-id='type-id-596'/>
+      <parameter type-id='type-id-580'/>
+      <parameter type-id='type-id-595'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <function-type size-in-bits='64' id='type-id-595'>
-      <parameter type-id='type-id-581'/>
+    <function-type size-in-bits='64' id='type-id-594'>
+      <parameter type-id='type-id-580'/>
       <parameter type-id='type-id-29'/>
       <return type-id='type-id-1'/>
     </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='os/linux/smb.c' comp-dir-path='/home/nabijaczleweli/store/code/zfs/lib/libshare' language='LANG_C99'>
-    <class-decl name='smb_share_s' size-in-bits='36992' is-struct='yes' visibility='default' filepath='./smb.h' line='38' column='1' id='type-id-597'>
+    <class-decl name='smb_share_s' size-in-bits='36992' is-struct='yes' visibility='default' filepath='./smb.h' line='38' column='1' id='type-id-596'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='name' type-id='type-id-598' visibility='default' filepath='./smb.h' line='39' column='1'/>
+        <var-decl name='name' type-id='type-id-597' visibility='default' filepath='./smb.h' line='39' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2040'>
         <var-decl name='path' type-id='type-id-117' visibility='default' filepath='./smb.h' line='40' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='34808'>
-        <var-decl name='comment' type-id='type-id-598' visibility='default' filepath='./smb.h' line='41' column='1'/>
+        <var-decl name='comment' type-id='type-id-597' visibility='default' filepath='./smb.h' line='41' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='36864'>
         <var-decl name='guest_ok' type-id='type-id-6' visibility='default' filepath='./smb.h' line='42' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='36928'>
-        <var-decl name='next' type-id='type-id-599' visibility='default' filepath='./smb.h' line='44' column='1'/>
+        <var-decl name='next' type-id='type-id-598' visibility='default' filepath='./smb.h' line='44' column='1'/>
       </data-member>
     </class-decl>
 
-    <array-type-def dimensions='1' type-id='type-id-42' size-in-bits='2040' id='type-id-598'>
-      <subrange length='255' type-id='type-id-43' id='type-id-600'/>
+    <array-type-def dimensions='1' type-id='type-id-42' size-in-bits='2040' id='type-id-597'>
+      <subrange length='255' type-id='type-id-43' id='type-id-599'/>
 
     </array-type-def>
-    <pointer-type-def type-id='type-id-597' size-in-bits='64' id='type-id-599'/>
-    <typedef-decl name='smb_share_t' type-id='type-id-597' filepath='./smb.h' line='45' column='1' id='type-id-601'/>
-    <pointer-type-def type-id='type-id-601' size-in-bits='64' id='type-id-602'/>
-    <var-decl name='smb_shares' type-id='type-id-602' mangled-name='smb_shares' visibility='default' filepath='os/linux/smb.c' line='69' column='1' elf-symbol-id='smb_shares'/>
+    <pointer-type-def type-id='type-id-596' size-in-bits='64' id='type-id-598'/>
+    <typedef-decl name='smb_share_t' type-id='type-id-596' filepath='./smb.h' line='45' column='1' id='type-id-600'/>
+    <pointer-type-def type-id='type-id-600' size-in-bits='64' id='type-id-601'/>
+    <var-decl name='smb_shares' type-id='type-id-601' mangled-name='smb_shares' visibility='default' filepath='os/linux/smb.c' line='69' column='1' elf-symbol-id='smb_shares'/>
     <function-decl name='opendir' filepath='/usr/include/dirent.h' line='134' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-89'/>
       <return type-id='type-id-316'/>
     </function-decl>
-    <class-decl name='dirent' size-in-bits='2240' is-struct='yes' visibility='default' filepath='/usr/include/x86_64-linux-gnu/bits/dirent.h' line='22' column='1' id='type-id-603'>
+    <class-decl name='dirent' size-in-bits='2240' is-struct='yes' visibility='default' filepath='/usr/include/x86_64-linux-gnu/bits/dirent.h' line='22' column='1' id='type-id-602'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='d_ino' type-id='type-id-318' visibility='default' filepath='/usr/include/x86_64-linux-gnu/bits/dirent.h' line='28' column='1'/>
       </data-member>
@@ -8316,10 +8308,10 @@
         <var-decl name='d_name' type-id='type-id-25' visibility='default' filepath='/usr/include/x86_64-linux-gnu/bits/dirent.h' line='33' column='1'/>
       </data-member>
     </class-decl>
-    <pointer-type-def type-id='type-id-603' size-in-bits='64' id='type-id-604'/>
+    <pointer-type-def type-id='type-id-602' size-in-bits='64' id='type-id-603'/>
     <function-decl name='readdir' mangled-name='readdir64' filepath='/usr/include/dirent.h' line='165' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-316'/>
-      <return type-id='type-id-604'/>
+      <return type-id='type-id-603'/>
     </function-decl>
     <function-decl name='fgets' filepath='/usr/include/stdio.h' line='570' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-29'/>

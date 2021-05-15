@@ -826,6 +826,8 @@ extern int zfs_mount(zfs_handle_t *, const char *, int);
 extern int zfs_mount_at(zfs_handle_t *, const char *, int, const char *);
 extern int zfs_unmount(zfs_handle_t *, const char *, int);
 extern int zfs_unmountall(zfs_handle_t *, int);
+/* True iff the system supports delegations or user is root */
+extern boolean_t zfs_could_mount(void);
 
 #if defined(__linux__)
 extern int zfs_parse_mount_options(char *mntopts, unsigned long *mntflags,

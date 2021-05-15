@@ -406,8 +406,8 @@ do_unmount(const char *mntpt, int flags)
 	return (rc ? EINVAL : 0);
 }
 
-int
-zfs_mount_delegation_check(void)
+boolean_t
+zfs_could_mount(void)
 {
-	return ((geteuid() != 0) ? EACCES : 0);
+	return (geteuid() == 0);
 }

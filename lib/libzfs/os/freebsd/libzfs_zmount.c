@@ -128,8 +128,8 @@ do_unmount(const char *mntpt, int flags)
 	return (0);
 }
 
-int
-zfs_mount_delegation_check(void)
+boolean_t
+zfs_could_mount(void)
 {
-	return (0);
+	return (B_TRUE);
 }
