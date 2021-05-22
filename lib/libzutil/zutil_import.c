@@ -1518,7 +1518,7 @@ static int
 discover_cached_paths(libpc_handle_t *hdl, nvlist_t *nv,
     avl_tree_t *cache, pthread_mutex_t *lock)
 {
-	char *path = NULL;
+	char *path = NULL, *sl;
 	uint_t children;
 	nvlist_t **child;
 
@@ -1534,8 +1534,12 @@ discover_cached_paths(libpc_handle_t *hdl, nvlist_t *nv,
 	 * our directory cache.
 	 */
 	if (nvlist_lookup_string(nv, ZPOOL_CONFIG_PATH, &path) == 0) {
+		if ((sl = strrchr(path, '/')) != NULL)
+			*sl = '\0';
+		else
+			path = ".";
 		return (zpool_find_import_scan_dir(hdl, lock, cache,
-		    dirname(path), 0));
+		    path, 0));
 	}
 	return (0);
 }
