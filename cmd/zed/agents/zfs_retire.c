@@ -220,7 +220,7 @@ replace_with_spare(fmd_hdl_t *hdl, zpool_handle_t *zhp, nvlist_t *vdev)
 	 */
 	for (s = 0; s < nspares; s++) {
 		boolean_t rebuild = B_FALSE;
-		char *spare_name, *type;
+		char *spare_name, *spare_bname, *type;
 
 		if (nvlist_lookup_string(spares[s], ZPOOL_CONFIG_PATH,
 		    &spare_name) != 0)
@@ -239,8 +239,10 @@ replace_with_spare(fmd_hdl_t *hdl, zpool_handle_t *zhp, nvlist_t *vdev)
 		(void) nvlist_add_nvlist_array(replacement,
 		    ZPOOL_CONFIG_CHILDREN, &spares[s], 1);
 
+		spare_bname = strrchr(spare_name, '/');
+		spare_bname = spare_bname ? spare_bname + 1 : spare_name;
 		fmd_hdl_debug(hdl, "zpool_vdev_replace '%s' with spare '%s'",
-		    dev_name, basename(spare_name));
+		    dev_name, spare_bname);
 
 		if (zpool_vdev_attach(zhp, dev_name, spare_name,
 		    replacement, B_TRUE, rebuild) == 0) {
