@@ -1070,7 +1070,7 @@ zfs_file_open(const char *path, int flags, int mode, zfs_file_t **fpp)
 
 	if (vn_dumpdir != NULL) {
 		char *dumppath = umem_zalloc(MAXPATHLEN, UMEM_NOFAIL);
-		char *inpath = basename((char *)(uintptr_t)path);
+		char *inpath = strrchr((char *)(uintptr_t)path, '/') + 1;
 
 		(void) snprintf(dumppath, MAXPATHLEN,
 		    "%s/%s", vn_dumpdir, inpath);
