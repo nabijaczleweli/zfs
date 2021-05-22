@@ -78,18 +78,19 @@
 
 #define	DEV_BYID_PATH	"/dev/disk/by-id/"
 
+/*
+ * Skip devices with well known prefixes:
+ * there can be side effects when opening devices which need to be avoided.
+ *
+ * hpet        - High Precision Event Timer
+ * watchdog[N] - Watchdog must be closed in a special way.
+ */
 static boolean_t
-is_watchdog_dev(char *dev)
+should_skip_dev(char *dev)
 {
-	/* For 'watchdog' dev */
-	if (strcmp(dev, "watchdog") == 0)
-		return (B_TRUE);
-
-	/* For 'watchdog<digit><whatever> */
-	if (strstr(dev, "watchdog") == dev && isdigit(dev[8]))
-		return (B_TRUE);
-
-	return (B_FALSE);
+	return ((strcmp(dev, "watchdog") == 0) ||
+	    (strncmp(dev, "watchdog", 8) == 0 && isdigit(dev[8])) ||
+	    (strcmp(dev, "hpet") == 0));
 }
 
 int
@@ -105,24 +106,15 @@ zpool_open_func(void *arg)
 	libpc_handle_t *hdl = rn->rn_hdl;
 	struct stat64 statbuf;
 	nvlist_t *config;
-	char *bname, *dupname;
+	char *bname;
 	uint64_t vdev_guid = 0;
 	int error;
 	int num_labels = 0;
 	int fd;
 
-	/*
-	 * Skip devices with well known prefixes there can be side effects
-	 * when opening devices which need to be avoided.
-	 *
-	 * hpet     - High Precision Event Timer
-	 * watchdog - Watchdog must be closed in a special way.
-	 */
-	dupname = zutil_strdup(hdl, rn->rn_name);
-	bname = basename(dupname);
-	error = ((strcmp(bname, "hpet") == 0) || is_watchdog_dev(bname));
-	free(dupname);
-	if (error)
+	bname = strrchr(rn->rn_name, '/');
+	bname = bname ? bname + 1 : rn->rn_name;
+	if (should_skip_dev(bname))
 		return;
 
 	/*
