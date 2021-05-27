@@ -18,7 +18,6 @@
 .\"
 .\" CDDL HEADER END
 .\"
-.\"
 .\" Copyright (c) 2009 Sun Microsystems, Inc. All Rights Reserved.
 .\" Copyright 2011 Joshua M. Clulow <josh@sysmgr.org>
 .\" Copyright (c) 2011, 2019 by Delphix. All rights reserved.
@@ -40,9 +39,10 @@
 .Dd June 30, 2019
 .Dt ZFS 8
 .Os
+.
 .Sh NAME
 .Nm zfs
-.Nd configures ZFS file systems
+.Nd configure ZFS datasets
 .Sh SYNOPSIS
 .Nm
 .Fl ?V
@@ -51,6 +51,7 @@
 .Nm
 .Cm <subcommand>
 .Op Ar <args>
+.
 .Sh DESCRIPTION
 The
 .Nm
@@ -58,9 +59,7 @@ command configures ZFS datasets within a ZFS storage pool, as described in
 .Xr zpool 8 .
 A dataset is identified by a unique path within the ZFS namespace.
 For example:
-.Bd -literal
-pool/{filesystem,volume,snapshot}
-.Ed
+.Dl pool/{filesystem,volume,snapshot}
 .Pp
 where the maximum length of a dataset name is
 .Dv MAXNAMELEN
@@ -92,7 +91,8 @@ or
 Much like a
 .Sy snapshot ,
 but without the hold on on-disk data.
-It can be used as the source of a send (but not for a receive). It is specified as
+It can be used as the source of a send (but not for a receive).
+It is specified as
 .Ar filesystem Ns # Ns Ar name
 or
 .Ar volume Ns # Ns Ar name .
@@ -124,6 +124,7 @@ directory listings, FUID mappings, and
 data.
 For an overview of encryption see the
 .Xr zfs-load-key 8 command manual.
+.
 .Sh SUBCOMMANDS
 All subcommands that modify state are logged persistently to the pool in their
 original form.
@@ -286,11 +287,13 @@ Detaches a filesystem from a jail.
 .It Xr zfs-wait 8
 Wait for background activity in a filesystem to complete.
 .El
+.
 .Sh EXIT STATUS
 The
 .Nm
 utility exits 0 on success, 1 if an error occurs, and 2 if invalid command line
 options were specified.
+.
 .Sh EXAMPLES
 .Bl -tag -width ""
 .It Sy Example 1 No Creating a ZFS File System Hierarchy
@@ -710,6 +713,7 @@ Do note that any changes done with the
 .Xr net 8
 command will be undone if the share is ever unshared (such as at a reboot etc).
 .El
+.
 .Sh ENVIRONMENT VARIABLES
 .Bl -tag -width "ZFS_MOUNT_HELPER"
 .It Ev ZFS_MOUNT_HELPER
@@ -717,10 +721,13 @@ Cause
 .Nm zfs mount
 to use
 .Em /bin/mount
-to mount zfs datasets. This option is provided for backwards compatibility with older zfs versions.
+to mount zfs datasets.
+This option is provided for backwards compatibility with older ZFS versions.
 .El
+.
 .Sh INTERFACE STABILITY
 .Sy Committed .
+.
 .Sh SEE ALSO
 .Xr attr 1 ,
 .Xr gzip 1 ,
