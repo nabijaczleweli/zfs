@@ -286,7 +286,6 @@
     <elf-symbol name='zutil_strdup' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
   <elf-variable-symbols>
-    <elf-symbol name='default_vtoc_map' size='64' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='efi_debug' size='4' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='libspl_assert_ok' size='4' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
@@ -4486,20 +4485,6 @@
     </function-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='rdwr_efi.c' comp-dir-path='/home/nabijaczleweli/store/code/zfs/lib/libefi' language='LANG_C99'>
-    <class-decl name='dk_map2' size-in-bits='32' is-struct='yes' visibility='default' id='type-id-375'>
-      <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='p_tag' type-id='type-id-225' visibility='default'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='16'>
-        <var-decl name='p_flag' type-id='type-id-225' visibility='default'/>
-      </data-member>
-    </class-decl>
-
-    <array-type-def dimensions='1' type-id='type-id-375' size-in-bits='512' id='type-id-376'>
-      <subrange length='16' type-id='type-id-12' id='type-id-104'/>
-
-    </array-type-def>
-    <var-decl name='default_vtoc_map' type-id='type-id-376' mangled-name='default_vtoc_map' visibility='default' elf-symbol-id='default_vtoc_map'/>
     <var-decl name='efi_debug' type-id='type-id-1' mangled-name='efi_debug' visibility='default' elf-symbol-id='efi_debug'/>
     <function-decl name='efi_alloc_and_init' mangled-name='efi_alloc_and_init' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='efi_alloc_and_init'>
       <parameter type-id='type-id-1' name='fd'/>
@@ -4529,15 +4514,15 @@
       <parameter type-id='type-id-233' name='vtoc'/>
       <return type-id='type-id-1'/>
     </function-decl>
-    <qualified-type-def type-id='type-id-30' const='yes' id='type-id-377'/>
-    <pointer-type-def type-id='type-id-377' size-in-bits='64' id='type-id-378'/>
+    <qualified-type-def type-id='type-id-30' const='yes' id='type-id-375'/>
+    <pointer-type-def type-id='type-id-375' size-in-bits='64' id='type-id-376'/>
     <function-decl name='uuid_is_null' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-378'/>
+      <parameter type-id='type-id-376'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='crc32' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-26'/>
-      <parameter type-id='type-id-378'/>
+      <parameter type-id='type-id-376'/>
       <parameter type-id='type-id-6'/>
       <return type-id='type-id-26'/>
     </function-decl>
