@@ -164,8 +164,8 @@ vdev_dbgmsg_print_tree(vdev_t *vd, int indent)
 	char state[20];
 
 	if (vd->vdev_ishole || vd->vdev_ops == &vdev_missing_ops) {
-		zfs_dbgmsg("%*svdev %u: %s", indent, "", vd->vdev_id,
-		    vd->vdev_ops->vdev_op_type);
+		zfs_dbgmsg("%*svdev %llu: %s", indent, "",
+		    (u_longlong_t)vd->vdev_id, vd->vdev_ops->vdev_op_type);
 		return;
 	}
 
@@ -260,11 +260,13 @@ vdev_get_mg(vdev_t *vd, metaslab_class_t *mc)
 		return (vd->vdev_mg);
 }
 
-/* ARGSUSED */
 void
 vdev_default_xlate(vdev_t *vd, const range_seg64_t *logical_rs,
     range_seg64_t *physical_rs, range_seg64_t *remain_rs)
 {
+	(void) vd;
+	(void) remain_rs;
+
 	physical_rs->rs_start = logical_rs->rs_start;
 	physical_rs->rs_end = logical_rs->rs_end;
 }
@@ -1766,6 +1768,7 @@ vdev_uses_zvols(vdev_t *vd)
 static boolean_t
 vdev_default_open_children_func(vdev_t *vd)
 {
+	(void) vd;
 	return (B_TRUE);
 }
 
@@ -2823,6 +2826,9 @@ boolean_t
 vdev_default_need_resilver(vdev_t *vd, const dva_t *dva, size_t psize,
     uint64_t phys_birth)
 {
+	(void) dva;
+	(void) psize;
+
 	/* Set by sequential resilver. */
 	if (phys_birth == TXG_UNKNOWN)
 		return (B_TRUE);
@@ -4266,6 +4272,8 @@ vdev_get_child_stat(vdev_t *cvd, vdev_stat_t *vs, vdev_stat_t *cvs)
 static void
 vdev_get_child_stat_ex(vdev_t *cvd, vdev_stat_ex_t *vsx, vdev_stat_ex_t *cvsx)
 {
+	(void) cvd;
+
 	int t, b;
 	for (t = 0; t < ZIO_TYPES; t++) {
 		for (b = 0; b < ARRAY_SIZE(vsx->vsx_disk_histo[0]); b++)
@@ -4702,6 +4710,8 @@ void
 vdev_space_update(vdev_t *vd, int64_t alloc_delta, int64_t defer_delta,
     int64_t space_delta)
 {
+	(void) defer_delta;
+
 	int64_t dspace_delta;
 	spa_t *spa = vd->vdev_spa;
 	vdev_t *rvd = spa->spa_root_vdev;
@@ -5208,8 +5218,9 @@ vdev_deadman(vdev_t *vd, char *tag)
 			zio_t *fio;
 			uint64_t delta;
 
-			zfs_dbgmsg("slow vdev: %s has %d active IOs",
-			    vd->vdev_path, avl_numnodes(&vq->vq_active_tree));
+			zfs_dbgmsg("slow vdev: %s has %llu active IOs",
+			    vd->vdev_path,
+			    (u_longlong_t)avl_numnodes(&vq->vq_active_tree));
 
 			/*
 			 * Look at the head of all the pending queues,

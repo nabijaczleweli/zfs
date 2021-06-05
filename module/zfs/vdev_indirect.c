@@ -529,8 +529,11 @@ spa_condense_indirect_complete_sync(void *arg, dmu_tx_t *tx)
 	zfs_dbgmsg("finished condense of vdev %llu in txg %llu: "
 	    "new mapping object %llu has %llu entries "
 	    "(was %llu entries)",
-	    vd->vdev_id, dmu_tx_get_txg(tx), vic->vic_mapping_object,
-	    new_count, old_count);
+	    (u_longlong_t)vd->vdev_id,
+	    (u_longlong_t)dmu_tx_get_txg(tx),
+	    (u_longlong_t)vic->vic_mapping_object,
+	    (u_longlong_t)new_count,
+	    (u_longlong_t)old_count);
 
 	vdev_config_dirty(spa->spa_root_vdev);
 }
@@ -609,7 +612,8 @@ spa_condense_indirect_generate_new_mapping(vdev_t *vd,
 
 		if (zthr_iscancelled(zthr)) {
 			zfs_dbgmsg("pausing condense of vdev %llu "
-			    "at index %llu", (u_longlong_t)vd->vdev_id,
+			    "at index %llu",
+			    (u_longlong_t)vd->vdev_id,
 			    (u_longlong_t)mapi);
 			break;
 		}
@@ -636,16 +640,15 @@ spa_condense_indirect_generate_new_mapping(vdev_t *vd,
 	}
 }
 
-/* ARGSUSED */
 static boolean_t
 spa_condense_indirect_thread_check(void *arg, zthr_t *zthr)
 {
-	spa_t *spa = arg;
+	(void) zthr;
 
+	spa_t *spa = arg;
 	return (spa->spa_condensing_indirect != NULL);
 }
 
-/* ARGSUSED */
 static void
 spa_condense_indirect_thread(void *arg, zthr_t *zthr)
 {
@@ -796,7 +799,7 @@ spa_condense_indirect_start_sync(vdev_t *vd, dmu_tx_t *tx)
 
 	zfs_dbgmsg("starting condense of vdev %llu in txg %llu: "
 	    "posm=%llu nm=%llu",
-	    vd->vdev_id, dmu_tx_get_txg(tx),
+	    (u_longlong_t)vd->vdev_id, (u_longlong_t)dmu_tx_get_txg(tx),
 	    (u_longlong_t)scip->scip_prev_obsolete_sm_object,
 	    (u_longlong_t)scip->scip_next_mapping_object);
 
@@ -940,13 +943,12 @@ vdev_obsolete_counts_are_precise(vdev_t *vd, boolean_t *are_precise)
 	return (error);
 }
 
-/* ARGSUSED */
 static void
 vdev_indirect_close(vdev_t *vd)
 {
+	(void) vd;
 }
 
-/* ARGSUSED */
 static int
 vdev_indirect_open(vdev_t *vd, uint64_t *psize, uint64_t *max_psize,
     uint64_t *logical_ashift, uint64_t *physical_ashift)

@@ -3076,7 +3076,7 @@ created_before(libzfs_handle_t *hdl, avl_tree_t *avl,
  */
 static int
 recv_fix_encryption_hierarchy(libzfs_handle_t *hdl, const char *top_zfs,
-    nvlist_t *stream_nv, avl_tree_t *stream_avl)
+    nvlist_t *stream_nv)
 {
 	int err;
 	nvpair_t *fselem = NULL;
@@ -3703,7 +3703,7 @@ zfs_receive_package(libzfs_handle_t *hdl, int fd, const char *destname,
 
 	if (raw && softerr == 0 && *top_zfs != NULL) {
 		softerr = recv_fix_encryption_hierarchy(hdl, *top_zfs,
-		    stream_nv, stream_avl);
+		    stream_nv);
 	}
 
 out:
@@ -4936,8 +4936,7 @@ out:
  * Check properties we were asked to override (both -o|-x)
  */
 static boolean_t
-zfs_receive_checkprops(libzfs_handle_t *hdl, nvlist_t *props,
-    const char *errbuf)
+zfs_receive_checkprops(libzfs_handle_t *hdl, nvlist_t *props)
 {
 	nvpair_t *nvp;
 	zfs_prop_t prop;
@@ -5001,7 +5000,7 @@ zfs_receive_impl(libzfs_handle_t *hdl, const char *tosnap,
 	    "cannot receive"));
 
 	/* check cmdline props, raise an error if they cannot be received */
-	if (!zfs_receive_checkprops(hdl, cmdprops, errbuf)) {
+	if (!zfs_receive_checkprops(hdl, cmdprops)) {
 		return (zfs_error(hdl, EZFS_BADPROP, errbuf));
 	}
 

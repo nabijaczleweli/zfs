@@ -64,6 +64,8 @@
 #include <sys/zfs_project.h>
 #include "zfs_namecheck.h"
 
+#pragma GCC diagnostic error "-Wunused-parameter"
+
 /*
  * Needed to close a window in dnode_move() that allows the objset to be freed
  * before it can be safely accessed.
@@ -713,6 +715,8 @@ static int
 dmu_objset_own_impl(dsl_dataset_t *ds, dmu_objset_type_t type,
     boolean_t readonly, boolean_t decrypt, void *tag, objset_t **osp)
 {
+	(void) tag;
+
 	int err;
 
 	err = dmu_objset_from_ds(ds, osp);
@@ -1119,7 +1123,6 @@ typedef struct dmu_objset_create_arg {
 	dsl_crypto_params_t *doca_dcp;
 } dmu_objset_create_arg_t;
 
-/*ARGSUSED*/
 static int
 dmu_objset_create_check(void *arg, dmu_tx_t *tx)
 {
@@ -1315,7 +1318,6 @@ typedef struct dmu_objset_clone_arg {
 	proc_t *doca_proc;
 } dmu_objset_clone_arg_t;
 
-/*ARGSUSED*/
 static int
 dmu_objset_clone_check(void *arg, dmu_tx_t *tx)
 {
@@ -1527,10 +1529,11 @@ dmu_objset_sync_dnodes(multilist_sublist_t *list, dmu_tx_t *tx)
 	}
 }
 
-/* ARGSUSED */
 static void
 dmu_objset_write_ready(zio_t *zio, arc_buf_t *abuf, void *arg)
 {
+	(void) abuf;
+
 	blkptr_t *bp = zio->io_bp;
 	objset_t *os = arg;
 	dnode_phys_t *dnp = &os->os_phys->os_meta_dnode;
@@ -1558,10 +1561,11 @@ dmu_objset_write_ready(zio_t *zio, arc_buf_t *abuf, void *arg)
 		rrw_exit(&os->os_dsl_dataset->ds_bp_rwlock, FTAG);
 }
 
-/* ARGSUSED */
 static void
 dmu_objset_write_done(zio_t *zio, arc_buf_t *abuf, void *arg)
 {
+	(void) abuf;
+
 	blkptr_t *bp = zio->io_bp;
 	blkptr_t *bp_orig = &zio->io_bp_orig;
 	objset_t *os = arg;
@@ -1616,7 +1620,7 @@ dmu_objset_sync(objset_t *os, zio_t *pio, dmu_tx_t *tx)
 	blkptr_t *blkptr_copy = kmem_alloc(sizeof (*os->os_rootbp), KM_SLEEP);
 	*blkptr_copy = *os->os_rootbp;
 
-	dprintf_ds(os->os_dsl_dataset, "txg=%llu\n", tx->tx_txg);
+	dprintf_ds(os->os_dsl_dataset, "txg=%llu\n", (u_longlong_t)tx->tx_txg);
 
 	ASSERT(dmu_tx_is_syncing(tx));
 	/* XXX the write_done callback should really give us the tx... */
