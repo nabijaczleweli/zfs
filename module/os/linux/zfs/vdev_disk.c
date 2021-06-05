@@ -546,7 +546,9 @@ __vdev_disk_physio(struct block_device *bdev, zio_t *zio,
 	if (io_offset + io_size > bdev->bd_inode->i_size) {
 		vdev_dbgmsg(zio->io_vd,
 		    "Illegal access %llu size %llu, device size %llu",
-		    io_offset, io_size, i_size_read(bdev->bd_inode));
+		    (unsigned long long)io_offset,
+		    (unsigned long long)io_size,
+		    (unsigned long long)i_size_read(bdev->bd_inode));
 		return (SET_ERROR(EIO));
 	}
 
