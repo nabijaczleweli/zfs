@@ -336,16 +336,13 @@ line_worker(char *line, const char *cachefile)
 				fprintf(keyloadunit_f,
 				    "Requires=%s\n", p_systemd_requires);
 
-			if (p_systemd_requiresmountsfor || keymountdep) {
-				fprintf(keyloadunit_f, "RequiresMountsFor=");
-				if (p_systemd_requiresmountsfor)
-					fprintf(keyloadunit_f,
-					    "%s ", p_systemd_requiresmountsfor);
-				if (keymountdep)
-					fprintf(keyloadunit_f,
-					    "'%s'", keymountdep);
-				fprintf(keyloadunit_f, "\n");
-			}
+			if (p_systemd_requiresmountsfor)
+				fprintf(keyloadunit_f,
+				    "RequiresMountsFor=%s\n",
+				    p_systemd_requiresmountsfor);
+			if (keymountdep)
+				fprintf(keyloadunit_f,
+				    "RequiresMountsFor='%s'\n", keymountdep);
 
 			/* BEGIN CSTYLED */
 			fprintf(keyloadunit_f,
