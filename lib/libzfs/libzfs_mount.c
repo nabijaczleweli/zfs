@@ -381,7 +381,6 @@ int
 zfs_mount_at(zfs_handle_t *zhp, const char *options, int flags,
     const char *mountpoint)
 {
-	// (void)
 	struct stat buf;
 	char mntopts[MNT_LINE_MAX];
 	char overlay[ZFS_MAXPROPLEN];
