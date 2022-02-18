@@ -143,10 +143,9 @@ int
 z_compress_level(void *dest, size_t *destLen, const void *source,
     size_t sourceLen, int level)
 {
-	z_stream stream;
+	z_stream stream = {0};
 	int err;
 
-	bzero(&stream, sizeof (stream));
 	stream.next_in = (Byte *)source;
 	stream.avail_in = (uInt)sourceLen;
 	stream.next_out = dest;
@@ -198,10 +197,8 @@ z_compress_level(void *dest, size_t *destLen, const void *source,
 int
 z_uncompress(void *dest, size_t *destLen, const void *source, size_t sourceLen)
 {
-	z_stream stream;
+	z_stream stream = {0};
 	int err;
-
-	bzero(&stream, sizeof (stream));
 
 	stream.next_in = (Byte *)source;
 	stream.avail_in = (uInt)sourceLen;
