@@ -1064,14 +1064,14 @@ taskq_create(const char *name, int threads_arg, pri_t pri,
 
 	tq->tq_hp_support = B_FALSE;
 #ifdef HAVE_CPU_HOTPLUG
-	if (flags & TASKQ_THREADS_CPU_PCT) {
-		tq->tq_hp_support = B_TRUE;
-		if (cpuhp_state_add_instance_nocalls(spl_taskq_cpuhp_state,
-		    &tq->tq_hp_cb_node) != 0) {
-			kmem_free(tq, sizeof (*tq));
-			return (NULL);
-		}
-	}
+	// if (flags & TASKQ_THREADS_CPU_PCT) {
+		// tq->tq_hp_support = B_TRUE;
+		// if (cpuhp_state_add_instance_nocalls(spl_taskq_cpuhp_state,
+		    // &tq->tq_hp_cb_node) != 0) {
+			// kmem_free(tq, sizeof (*tq));
+			// return (NULL);
+		// }
+	// }
 #endif
 
 	spin_lock_init(&tq->tq_lock);
@@ -1157,10 +1157,10 @@ taskq_destroy(taskq_t *tq)
 	spin_unlock_irqrestore(&tq->tq_lock, flags);
 
 #ifdef HAVE_CPU_HOTPLUG
-	if (tq->tq_hp_support) {
-		VERIFY0(cpuhp_state_remove_instance_nocalls(
-		    spl_taskq_cpuhp_state, &tq->tq_hp_cb_node));
-	}
+	//if (tq->tq_hp_support) {
+	//	VERIFY0(cpuhp_state_remove_instance_nocalls(
+	//	    spl_taskq_cpuhp_state, &tq->tq_hp_cb_node));
+	//}
 #endif
 	/*
 	 * When TASKQ_ACTIVE is clear new tasks may not be added nor may
@@ -1372,8 +1372,8 @@ spl_taskq_init(void)
 	tsd_create(&taskq_tsd, NULL);
 
 #ifdef HAVE_CPU_HOTPLUG
-	spl_taskq_cpuhp_state = cpuhp_setup_state_multi(CPUHP_AP_ONLINE_DYN,
-	    "fs/spl_taskq:online", spl_taskq_expand, spl_taskq_prepare_down);
+	// spl_taskq_cpuhp_state = cpuhp_setup_state_multi(CPUHP_AP_ONLINE_DYN,
+	    // "fs/spl_taskq:online", spl_taskq_expand, spl_taskq_prepare_down);
 #endif
 
 	system_taskq = taskq_create("spl_system_taskq", MAX(boot_ncpus, 64),
@@ -1385,7 +1385,7 @@ spl_taskq_init(void)
 	    maxclsyspri, boot_ncpus, INT_MAX, TASKQ_PREPOPULATE|TASKQ_DYNAMIC);
 	if (system_delay_taskq == NULL) {
 #ifdef HAVE_CPU_HOTPLUG
-		cpuhp_remove_multi_state(spl_taskq_cpuhp_state);
+		// cpuhp_remove_multi_state(spl_taskq_cpuhp_state);
 #endif
 		taskq_destroy(system_taskq);
 		return (1);
@@ -1395,7 +1395,7 @@ spl_taskq_init(void)
 	    maxclsyspri, boot_ncpus, INT_MAX, TASKQ_PREPOPULATE);
 	if (dynamic_taskq == NULL) {
 #ifdef HAVE_CPU_HOTPLUG
-		cpuhp_remove_multi_state(spl_taskq_cpuhp_state);
+		// cpuhp_remove_multi_state(spl_taskq_cpuhp_state);
 #endif
 		taskq_destroy(system_taskq);
 		taskq_destroy(system_delay_taskq);
@@ -1427,7 +1427,7 @@ spl_taskq_fini(void)
 	tsd_destroy(&taskq_tsd);
 
 #ifdef HAVE_CPU_HOTPLUG
-	cpuhp_remove_multi_state(spl_taskq_cpuhp_state);
-	spl_taskq_cpuhp_state = 0;
+	// cpuhp_remove_multi_state(spl_taskq_cpuhp_state);
+	// spl_taskq_cpuhp_state = 0;
 #endif
 }

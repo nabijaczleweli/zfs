@@ -58,6 +58,8 @@
 #include <sys/zvol.h>
 #include <sys/fm/util.h>
 #include <sys/dsl_crypt.h>
+#include <sys/crypto/icp.h>
+#include <sys/zstd/zstd.h>
 
 #include <sys/zfs_ioctl_impl.h>
 
@@ -233,8 +235,8 @@ zfsdev_detach(void)
 #define	ZFS_DEBUG_STR	""
 #endif
 
-static int __init
-openzfs_init(void)
+static int
+openzfs_init_os(void)
 {
 	int error;
 
@@ -259,8 +261,8 @@ openzfs_init(void)
 	return (0);
 }
 
-static void __exit
-openzfs_fini(void)
+static void
+openzfs_fini_os(void)
 {
 	zfs_sysfs_fini();
 	zfs_kmod_fini();
@@ -269,12 +271,53 @@ openzfs_fini(void)
 	    ZFS_META_VERSION, ZFS_META_RELEASE, ZFS_DEBUG_STR);
 }
 
+extern int __init spl_init(void);
+extern void __exit spl_fini(void);
+extern int __init zcommon_init(void);
+extern void __exit zcommon_fini(void);
+
+
+static int __init
+openzfs_init(void)
+{
+	int err;
+	if ((err = spl_init()) != 0)
+		return (err);
+	if ((err = zcommon_init()) != 0)
+		return (err);
+	if ((err = icp_init()) != 0)
+		return (err);
+	if ((err = zstd_init()) != 0)
+		return (err);
+	if ((err = openzfs_init_os()) != 0)
+		return (err);
+	return (0);
+}
+
+static void __exit
+openzfs_fini(void)
+{
+	openzfs_fini_os();
+	zstd_fini();
+	icp_fini();
+	zcommon_fini();
+	spl_fini();
+}
+
 #if defined(_KERNEL)
 module_init(openzfs_init);
 module_exit(openzfs_fini);
 #endif
 
-ZFS_MODULE_DESCRIPTION("ZFS");
-ZFS_MODULE_AUTHOR(ZFS_META_AUTHOR);
-ZFS_MODULE_LICENSE(ZFS_META_LICENSE);
-ZFS_MODULE_VERSION(ZFS_META_VERSION "-" ZFS_META_RELEASE);
+MODULE_ALIAS("spl");
+MODULE_ALIAS("zavl");
+MODULE_ALIAS("icp");
+MODULE_ALIAS("zlua");
+MODULE_ALIAS("znvpair");
+MODULE_ALIAS("zunicode");
+MODULE_ALIAS("zcommon");
+MODULE_ALIAS("zzstd");
+MODULE_DESCRIPTION("ZFS");
+MODULE_AUTHOR(ZFS_META_AUTHOR);
+MODULE_LICENSE(ZFS_META_LICENSE);
+MODULE_VERSION(ZFS_META_VERSION "-" ZFS_META_RELEASE);

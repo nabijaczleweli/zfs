@@ -400,7 +400,7 @@ __cv_timedwait_hires(kcondvar_t *cvp, kmutex_t *mp, hrtime_t expire_time,
 	ktime_left = ktime_set(0, time_left);
 	slack = MIN(MAX(res, spl_schedule_hrtimeout_slack_us * NSEC_PER_USEC),
 	    MAX_HRTIMEOUT_SLACK_US * NSEC_PER_USEC);
-	rc = schedule_hrtimeout_range(&ktime_left, slack, HRTIMER_MODE_REL);
+	// rc = schedule_hrtimeout_range(&ktime_left, slack, HRTIMER_MODE_REL);
 
 	/* No more waiters a different mutex could be used */
 	if (atomic_dec_and_test(&cvp->cv_waiters)) {

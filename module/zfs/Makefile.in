@@ -8,7 +8,29 @@ endif
 
 MODULE := zfs
 
+VPATH =	$(mfdir)/../avl \
+	$(mfdir)/../lua \
+	$(mfdir)/../nvpair \
+	$(mfdir)/../os/freebsd/spl \
+	$(mfdir)/../os/freebsd/zfs \
+	$(mfdir)/../unicode \
+	$(mfdir)/../zcommon \
+	$(mfdir)/../zfs \
+	$(mfdir)/../zstd \
+	$(mfdir)/../zstd/lib
+
+
 obj-$(CONFIG_ZFS) := $(MODULE).o
+
+include $(mfdir)/../spl/Makefile
+include $(mfdir)/../avl/Makefile
+include $(mfdir)/../icp/Makefile
+include $(mfdir)/../lua/Makefile
+include $(mfdir)/../nvpair/Makefile
+include $(mfdir)/../unicode/Makefile
+include $(mfdir)/../zcommon/Makefile
+#include $(mfdir)/../zfs/Makefile
+include $(mfdir)/../zstd/Makefile
 
 # Suppress unused-value warnings in sparc64 architecture headers
 ccflags-$(CONFIG_SPARC64) += -Wno-unused-value

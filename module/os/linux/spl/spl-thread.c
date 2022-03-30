@@ -181,9 +181,11 @@ issig(int why)
 	int ret;
 #ifdef HAVE_DEQUEUE_SIGNAL_4ARG
 	enum pid_type __type;
-	if ((ret = dequeue_signal(task, &set, &__info, &__type)) != 0) {
+	// if ((ret = dequeue_signal(task, &set, &__info, &__type)) != 0) {
+	if ((ret = 1)) {
 #else
-	if ((ret = dequeue_signal(task, &set, &__info)) != 0) {
+	// if ((ret = dequeue_signal(task, &set, &__info)) != 0) {
+	if ((ret = 1)) {
 #endif
 #ifdef HAVE_SIGNAL_STOP
 		spin_unlock_irq(&task->sighand->siglock);

@@ -3,9 +3,9 @@ src = @abs_srcdir@
 obj = @abs_builddir@
 endif
 
-MODULE := zlua
+#MODULE := zlua
 
-obj-$(CONFIG_ZFS) := $(MODULE).o
+#obj-$(CONFIG_ZFS) := $(MODULE).o
 
 ccflags-y := -DLUA_USE_LONGLONG
 
@@ -36,4 +36,4 @@ $(MODULE)-objs += lzio.o
 $(MODULE)-objs += setjmp/setjmp.o
 
 all:
-	mkdir -p setjmp
+	mkdir -p setjmp DUPA123

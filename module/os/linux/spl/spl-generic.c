@@ -725,8 +725,9 @@ spl_random_init(void)
 	uint64_t s[2];
 	int i = 0;
 
-	spl_pseudo_entropy = __alloc_percpu(2 * sizeof (uint64_t),
-	    sizeof (uint64_t));
+	// spl_pseudo_entropy = __alloc_percpu(2 * sizeof (uint64_t),
+	    // sizeof (uint64_t));
+	spl_pseudo_entropy = NULL;
 
 	get_random_bytes(s, sizeof (s));
 
@@ -756,7 +757,7 @@ spl_random_init(void)
 static void
 spl_random_fini(void)
 {
-	free_percpu(spl_pseudo_entropy);
+	// free_percpu(spl_pseudo_entropy);
 }
 
 static void
@@ -766,7 +767,10 @@ spl_kvmem_fini(void)
 	spl_kmem_fini();
 }
 
-static int __init
+extern int __init spl_init(void);
+extern void __exit spl_fini(void);
+
+int __init
 spl_init(void)
 {
 	int rc = 0;
@@ -812,7 +816,7 @@ out1:
 	return (rc);
 }
 
-static void __exit
+void __exit
 spl_fini(void)
 {
 	spl_zlib_fini();
@@ -825,10 +829,7 @@ spl_fini(void)
 	spl_random_fini();
 }
 
+#ifdef __FreeBSD__
 module_init(spl_init);
 module_exit(spl_fini);
-
-ZFS_MODULE_DESCRIPTION("Solaris Porting Layer");
-ZFS_MODULE_AUTHOR(ZFS_META_AUTHOR);
-ZFS_MODULE_LICENSE("GPL");
-ZFS_MODULE_VERSION(ZFS_META_VERSION "-" ZFS_META_RELEASE);
+#endif

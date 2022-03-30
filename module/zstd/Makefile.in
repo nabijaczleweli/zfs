@@ -1,14 +1,14 @@
 ifneq ($(KBUILD_EXTMOD),)
 src = @abs_srcdir@
 obj = @abs_builddir@
-zstd_include = $(src)/include
+zstd_include = @abs_srcdir@/include
 else
 zstd_include = $(srctree)/$(src)/include
 endif
 
-MODULE := zzstd
+# MODULE := zzstd
 
-obj-$(CONFIG_ZFS) := $(MODULE).o
+#obj-$(CONFIG_ZFS) := $(MODULE).o
 
 asflags-y := -I$(zstd_include)
 ccflags-y := -I$(zstd_include)

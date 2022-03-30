@@ -3,9 +3,9 @@ src = @abs_srcdir@
 obj = @abs_builddir@
 endif
 
-MODULE := znvpair
+#MODULE := znvpair
 
-obj-$(CONFIG_ZFS) := $(MODULE).o
+# obj-$(CONFIG_ZFS) := $(MODULE).o
 
 $(MODULE)-objs += nvpair.o
 $(MODULE)-objs += fnvpair.o

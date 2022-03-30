@@ -1,10 +1,10 @@
-ifneq ($(KBUILD_EXTMOD),)
-src = @abs_srcdir@
-obj = @abs_builddir@
-endif
+#ifneq ($(KBUILD_EXTMOD),)
+#src = @abs_srcdir@
+#obj = @abs_builddir@
+#endif
 
-MODULE := zavl
+#MODULE := zavl
 
-obj-$(CONFIG_ZFS) := $(MODULE).o
+#obj-$(CONFIG_ZFS) := $(MODULE).o
 
-$(MODULE)-objs += avl.o
+$(MODULE)-objs += ../avl/avl.o

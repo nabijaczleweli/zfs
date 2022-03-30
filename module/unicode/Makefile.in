@@ -3,9 +3,9 @@ src = @abs_srcdir@
 obj = @abs_builddir@
 endif
 
-MODULE := zunicode
+#MODULE := zunicode
 
-obj-$(CONFIG_ZFS) := $(MODULE).o
+#obj-$(CONFIG_ZFS) := $(MODULE).o
 
 $(MODULE)-objs += u8_textprep.o
 $(MODULE)-objs += uconv.o

@@ -6,9 +6,9 @@ else
 icp_include = $(srctree)/$(src)/include
 endif
 
-MODULE := icp
+#MODULE := icp
 
-obj-$(CONFIG_ZFS) := $(MODULE).o
+#obj-$(CONFIG_ZFS) := $(MODULE).o
 
 asflags-y := -I$(icp_include)
 ccflags-y := -I$(icp_include)
