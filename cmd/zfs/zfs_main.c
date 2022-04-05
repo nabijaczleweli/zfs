@@ -1892,6 +1892,16 @@ get_callback(zfs_handle_t *zhp, void *data)
 	boolean_t received = is_recvd_column(cbp);
 
 	for (; pl != NULL; pl = pl->pl_next) {
+		fprintf(stderr, "pl: %d/%s; all=%d? w=%zu; rw=%zu; fi=%d?\n", pl->pl_prop,
+pl->pl_user_prop,
+pl->pl_all,
+pl->pl_width,
+pl->pl_recvd_width,
+pl->pl_fixed);
+	}
+	pl = cbp->cb_proplist;
+
+	for (; pl != NULL; pl = pl->pl_next) {
 		char *recvdval = NULL;
 		/*
 		 * Skip the special fake placeholder.  This will also skip over
@@ -2167,9 +2177,28 @@ found3:;
 		limit = 1;
 	}
 
+	zprop_list_t *pl = cb.cb_proplist;
+	for (; pl != NULL; pl = pl->pl_next) {
+		fprintf(stderr, "bpl: %d/%s; all=%d? w=%zu; rw=%zu; fi=%d?\n", pl->pl_prop,
+pl->pl_user_prop,
+pl->pl_all,
+pl->pl_width,
+pl->pl_recvd_width,
+pl->pl_fixed);
+	}
+
 	if (zprop_get_list(g_zfs, fields, &cb.cb_proplist, ZFS_TYPE_DATASET)
 	    != 0)
 		usage(B_FALSE);
+	pl = cb.cb_proplist;
+	for (; pl != NULL; pl = pl->pl_next) {
+		fprintf(stderr, "apl: %d/%s; all=%d? w=%zu; rw=%zu; fi=%d?\n", pl->pl_prop,
+pl->pl_user_prop,
+pl->pl_all,
+pl->pl_width,
+pl->pl_recvd_width,
+pl->pl_fixed);
+	}
 
 	argc--;
 	argv++;
@@ -2191,8 +2220,18 @@ found3:;
 
 	cb.cb_first = B_TRUE;
 
+	pl = cb.cb_proplist;
+	for (; pl != NULL; pl = pl->pl_next) {
+		fprintf(stderr, "aapl: %d/%s; all=%d? w=%zu; rw=%zu; fi=%d?\n", pl->pl_prop,
+pl->pl_user_prop,
+pl->pl_all,
+pl->pl_width,
+pl->pl_recvd_width,
+pl->pl_fixed);
+	}
+
 	/* run for each object */
-	ret = zfs_for_each(argc, argv, flags, types, NULL,
+	ret = zfs_for_each(argc, argv, flags, types, cb.cb_sources, NULL,
 	    &cb.cb_proplist, limit, get_callback, &cb);
 
 	if (cb.cb_proplist == &fake_name)
@@ -2330,10 +2369,10 @@ zfs_do_inherit(int argc, char **argv)
 
 	if (flags & ZFS_ITER_RECURSE) {
 		ret = zfs_for_each(argc, argv, flags, ZFS_TYPE_DATASET,
-		    NULL, NULL, 0, inherit_recurse_cb, &cb);
+		    ZPROP_SRC_ALL, NULL, NULL, 0, inherit_recurse_cb, &cb);
 	} else {
 		ret = zfs_for_each(argc, argv, flags, ZFS_TYPE_DATASET,
-		    NULL, NULL, 0, inherit_cb, &cb);
+		    ZPROP_SRC_ALL, NULL, NULL, 0, inherit_cb, &cb);
 	}
 
 	return (ret);
@@ -2534,7 +2573,7 @@ zfs_do_upgrade(int argc, char **argv)
 		if (cb.cb_version == 0)
 			cb.cb_version = ZPL_VERSION;
 		ret = zfs_for_each(argc, argv, flags, ZFS_TYPE_FILESYSTEM,
-		    NULL, NULL, 0, upgrade_set_callback, &cb);
+		    ZPROP_SRC_ALL, NULL, NULL, 0, upgrade_set_callback, &cb);
 		(void) printf(gettext("%llu filesystems upgraded\n"),
 		    (u_longlong_t)cb.cb_numupgraded);
 		if (cb.cb_numsamegraded) {
@@ -2552,14 +2591,14 @@ zfs_do_upgrade(int argc, char **argv)
 
 		flags |= ZFS_ITER_RECURSE;
 		ret = zfs_for_each(0, NULL, flags, ZFS_TYPE_FILESYSTEM,
-		    NULL, NULL, 0, upgrade_list_callback, &cb);
+		    ZPROP_SRC_ALL, NULL, NULL, 0, upgrade_list_callback, &cb);
 
 		found = cb.cb_foundone;
 		cb.cb_foundone = B_FALSE;
 		cb.cb_newer = B_TRUE;
 
 		ret = zfs_for_each(0, NULL, flags, ZFS_TYPE_FILESYSTEM,
-		    NULL, NULL, 0, upgrade_list_callback, &cb);
+		    ZPROP_SRC_ALL, NULL, NULL, 0, upgrade_list_callback, &cb);
 
 		if (!cb.cb_foundone && !found) {
 			(void) printf(gettext("All filesystems are "
@@ -3673,7 +3712,7 @@ found3:;
 
 	cb.cb_first = B_TRUE;
 
-	ret = zfs_for_each(argc, argv, flags, types, sortcol, &cb.cb_proplist,
+	ret = zfs_for_each(argc, argv, flags, types, ZPROP_SRC_ALL, sortcol, &cb.cb_proplist,
 	    limit, list_callback, &cb);
 
 	zprop_free_list(cb.cb_proplist);
@@ -4193,7 +4232,7 @@ zfs_do_set(int argc, char **argv)
 	}
 
 	ret = zfs_for_each(argc - ds_start, argv + ds_start, 0,
-	    ZFS_TYPE_DATASET, NULL, NULL, 0, set_callback, props);
+	    ZFS_TYPE_DATASET, ZPROP_SRC_ALL, NULL, NULL, 0, set_callback, props);
 
 error:
 	nvlist_free(props);
@@ -6600,7 +6639,7 @@ zfs_do_holds(int argc, char **argv)
 		/*
 		 *  1. collect holds data, set format options
 		 */
-		ret = zfs_for_each(argc, argv, flags, types, NULL, NULL, limit,
+		ret = zfs_for_each(argc, argv, flags, types, ZPROP_SRC_ALL, NULL, NULL, limit,
 		    holds_callback, &cb);
 		if (ret != 0)
 			++errors;
@@ -8217,7 +8256,7 @@ load_unload_keys(int argc, char **argv, boolean_t loadkey)
 	}
 
 	ret = zfs_for_each(argc, argv, flags,
-	    ZFS_TYPE_FILESYSTEM | ZFS_TYPE_VOLUME, NULL, NULL, 0,
+	    ZFS_TYPE_FILESYSTEM | ZFS_TYPE_VOLUME, ZPROP_SRC_ALL, NULL, NULL, 0,
 	    load_key_callback, &cb);
 
 	if (cb.cb_noop || (cb.cb_recursive && cb.cb_numattempted != 0)) {

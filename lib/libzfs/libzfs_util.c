@@ -1276,6 +1276,7 @@ zprop_print_headers(zprop_get_cbdata_t *cbp, zfs_type_t type)
 		/*
 		 * 'PROPERTY' column
 		 */
+fprintf(stderr, "hd: %d/%s; pre : propw=%d\n", pl->pl_prop, pl->pl_user_prop, cbp->cb_colwidths[GET_COL_PROPERTY]);
 		if (pl->pl_prop != ZPROP_INVAL) {
 			const char *propname = (type == ZFS_TYPE_POOL) ?
 			    zpool_prop_to_name(pl->pl_prop) :
@@ -1293,6 +1294,7 @@ zprop_print_headers(zprop_get_cbdata_t *cbp, zfs_type_t type)
 			if (len > cbp->cb_colwidths[GET_COL_PROPERTY])
 				cbp->cb_colwidths[GET_COL_PROPERTY] = len;
 		}
+fprintf(stderr, "hd: %d/%s; post: propw=%d\n", pl->pl_prop, pl->pl_user_prop, cbp->cb_colwidths[GET_COL_PROPERTY]);
 
 		/*
 		 * 'VALUE' column.  The first property is always the 'name'

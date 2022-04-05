@@ -571,6 +571,7 @@ typedef struct zprop_list {
 _LIBZFS_H int zfs_expand_proplist(zfs_handle_t *, zprop_list_t **, boolean_t,
     boolean_t);
 _LIBZFS_H void zfs_prune_proplist(zfs_handle_t *, uint8_t *);
+_LIBZFS_H void zfs_prune_sourcelist(zfs_handle_t *zhp, zprop_source_t sources);
 _LIBZFS_H int vdev_expand_proplist(zpool_handle_t *, const char *,
     zprop_list_t **);
 

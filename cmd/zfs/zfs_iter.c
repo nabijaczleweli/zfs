@@ -59,6 +59,7 @@ typedef struct callback_data {
 	uu_avl_t		*cb_avl;
 	int			cb_flags;
 	zfs_type_t		cb_types;
+	zprop_source_t		cb_sources;
 	zfs_sort_column_t	*cb_sortcol;
 	zprop_list_t		**cb_proplist;
 	int			cb_depth_limit;
@@ -110,6 +111,8 @@ zfs_callback(zfs_handle_t *zhp, void *data)
 				    !(*cb->cb_proplist)->pl_all)
 					zfs_prune_proplist(zhp,
 					    cb->cb_props_table);
+
+				zfs_prune_sourcelist(zhp, cb->cb_sources);
 
 				if (zfs_expand_proplist(zhp, cb->cb_proplist,
 				    (cb->cb_flags & ZFS_ITER_RECVD_PROPS),
@@ -385,8 +388,8 @@ zfs_sort(const void *larg, const void *rarg, void *data)
 
 int
 zfs_for_each(int argc, char **argv, int flags, zfs_type_t types,
-    zfs_sort_column_t *sortcol, zprop_list_t **proplist, int limit,
-    zfs_iter_f callback, void *data)
+    zprop_source_t sources, zfs_sort_column_t *sortcol, zprop_list_t **proplist,
+    int limit, zfs_iter_f callback, void *data)
 {
 	callback_data_t cb = {0};
 	int ret = 0;
@@ -403,10 +406,12 @@ zfs_for_each(int argc, char **argv, int flags, zfs_type_t types,
 	cb.cb_flags = flags;
 	cb.cb_proplist = proplist;
 	cb.cb_types = types;
+	cb.cb_sources = sources;
 	cb.cb_depth_limit = limit;
 	/*
 	 * If cb_proplist is provided then in the zfs_handles created we
-	 * retain only those properties listed in cb_proplist and sortcol.
+	 * retain only those properties listed in cb_proplist and sortcol,
+	 * and only ones matching cb_sources.
 	 * The rest are pruned. So, the caller should make sure that no other
 	 * properties other than those listed in cb_proplist/sortcol are
 	 * accessed.

@@ -4733,6 +4733,67 @@ zfs_prune_proplist(zfs_handle_t *zhp, uint8_t *props)
 	}
 }
 
+void
+zfs_prune_sourcelist(zfs_handle_t *zhp, zprop_source_t sources)
+{
+fprintf(stderr, "zfs_prune_sourcelist(%x)\n", sources);
+	if (sources == ZPROP_SRC_ALL)
+		return;
+
+	char buf[1];
+	char source[ZFS_MAX_DATASET_NAME_LEN];
+	for (nvpair_t *curr = nvlist_next_nvpair(zhp->zfs_props, NULL), *next; curr; curr = next) {
+		const char *prop_name = nvpair_name(curr);
+		zfs_prop_t zfs_prop = zfs_name_to_prop(prop_name);
+		next = nvlist_next_nvpair(zhp->zfs_props, curr);
+
+		zprop_source_t sourcetype = ZPROP_SRC_NONE;
+
+		if (zfs_prop != ZPROP_INVAL) {
+			zfs_prop_get(zhp, zfs_prop, buf,
+			    sizeof (buf), &sourcetype, source,
+			    sizeof (source), B_TRUE);
+		} else if (zfs_prop_userquota(prop_name)) {
+			sourcetype = ZPROP_SRC_LOCAL;
+
+			if (zfs_prop_get_userquota(zhp, prop_name,
+			    buf, sizeof (buf), B_TRUE) != 0)
+				sourcetype = ZPROP_SRC_NONE;
+		} else if (zfs_prop_written(prop_name)) {
+			sourcetype = ZPROP_SRC_LOCAL;
+
+			if (zfs_prop_get_written(zhp, prop_name,
+			    buf, sizeof (buf), B_TRUE) != 0)
+				sourcetype = ZPROP_SRC_NONE;
+		} else {
+			nvlist_t *propval;
+			char *sourceval;
+			if (nvlist_lookup_nvlist(zhp->zfs_user_props,
+			    prop_name, &propval) == 0) {
+				verify(nvlist_lookup_string(propval,
+				    ZPROP_SOURCE, &sourceval) == 0);
+
+				if (strcmp(sourceval,
+				    zfs_get_name(zhp)) == 0)
+					sourcetype = ZPROP_SRC_LOCAL;
+				else if (strcmp(sourceval,
+				    ZPROP_SOURCE_VAL_RECVD) == 0)
+					sourcetype = ZPROP_SRC_RECEIVED;
+				else
+					sourcetype = ZPROP_SRC_INHERITED;
+			}
+		}
+
+fprintf(stderr, "ps: %d/%s: %x => %x\n", zfs_prop, prop_name, sources, sourcetype & sources);
+		if (!(sourcetype & sources)) {
+			fprintf(stderr, "    remove: %d\n", nvlist_remove(zhp->zfs_props,
+			    prop_name, nvpair_type(curr)));
+			fprintf(stderr, "    remove: %d\n", nvlist_remove(zhp->zfs_user_props,
+			    prop_name, nvpair_type(curr)));
+		}
+	}
+}
+
 static int
 zfs_smb_acl_mgmt(libzfs_handle_t *hdl, char *dataset, char *path,
     zfs_smb_acl_op_t cmd, char *resource1, char *resource2)
